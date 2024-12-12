@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\auth\AuthController;
+use App\Http\Controllers\Field\FieldController;
+use App\Http\Controllers\Field\FieldTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,3 +33,6 @@ Route::group([
     Route::post('me', [AuthController::class, 'me']);
 
 });
+
+Route::apiResource('fieldType', FieldTypeController::class);
+Route::apiResource('field', FieldController::class);

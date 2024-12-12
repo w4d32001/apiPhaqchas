@@ -12,18 +12,18 @@ class Field extends Model
     use HasFactory;
     protected $fillable = [
         'field_type_id',
-        'price',
+        'price_morning',
+        'price_evening',
         'status',
     ];
 
-    public function fieldType():BelongsTo
+    public function fieldType(): BelongsTo
     {
         return $this->belongsTo(FieldType::class);
     }
 
-    public function bookings():HasMany
+    public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
     }
-
 }

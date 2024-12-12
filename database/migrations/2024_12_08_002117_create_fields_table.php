@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('fields', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('field_type_id');
-            $table->decimal('price',10,2);
+            $table->decimal('price_morning',10,2);
+            $table->decimal('price_evening',10,2);
             $table->enum('status', ['disponible', 'mantenimiento'])->default('disponible');
             $table->timestamps();
         });

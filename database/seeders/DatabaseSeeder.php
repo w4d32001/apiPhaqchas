@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use Database\Seeders\Field\FieldTypeSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolSeeder::class,
             UserSeeder::class,
+            FieldTypeSeeder::class
         ]);
     }
 }
