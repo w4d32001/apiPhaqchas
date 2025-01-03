@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('fields', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 250);
             $table->unsignedBigInteger('field_type_id');
             $table->decimal('price_morning',10,2);
             $table->decimal('price_evening',10,2);

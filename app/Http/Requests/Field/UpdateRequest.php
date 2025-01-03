@@ -24,7 +24,8 @@ class UpdateRequest extends FormRequest
         return [
             'field_type_id' => ['required', 'exists:field_types,id'],
             'price_morning' => ['required', 'numeric'],
-            'price_evening' => ['required', 'numeric']
+            'price_evening' => ['required', 'numeric'],
+            'name' => ['required']
         ];
     }
 }

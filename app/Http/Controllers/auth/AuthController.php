@@ -79,9 +79,21 @@ class AuthController extends Controller
      * )
      */
     public function me()
-    {
+{
+    try {
+        if (!auth()->check()) {
+            throw new \Exception('Usuario no autenticado.');
+        }
         return response()->json(auth()->user());
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage(),
+            'code' => $e->getCode(),
+        ], 401); 
     }
+}
+
 
     /**
      * Cerrar sesión y invalidar el token.

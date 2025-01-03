@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('booking_date');
             $table->time('start_time');
             $table->time('end_time');
-            $table->enum('status', ['pendiente', 'cancelado', 'confirmado'])->default('pendiente');
+            $table->enum('status', ['reservado', 'disponible']);
             $table->decimal('total', 10,2);
             $table->timestamps();
         });

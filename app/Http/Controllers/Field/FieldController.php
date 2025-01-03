@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Field;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Field\StoreRequest;
 use App\Http\Requests\Field\UpdateRequest;
+use App\Http\Resources\Field\FieldResource;
 use App\Models\Field;
 use Illuminate\Http\Request;
 
@@ -13,8 +14,8 @@ class FieldController extends Controller
     public function index()
     {
         try {
-            $fields = Field::select('id', 'field_type_id', 'price_morning', 'price_evening', 'status')->get();
-            return $this->sendResponse(['field' => $fields], 'Lista de campos');
+            $fields = Field::select('id', 'field_type_id', 'price_morning', 'price_evening', 'status', 'name')->get();
+            return $this->sendResponse(['field' => FieldResource::collection($fields)], 'Lista de campos');
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage());
         }
@@ -27,6 +28,7 @@ class FieldController extends Controller
 
             $field = Field::create([
                 'field_type_id' => $validated['field_type_id'],
+                'name' => $validated['name'],
                 'price_morning' => $validated['price_morning'], 
                 'price_evening' => $validated['price_evening'], 
             ]);
@@ -44,8 +46,9 @@ class FieldController extends Controller
 
             $field->update([
                 'field_type_id' => $validated['field_type_id'] ?? $field->field_type_id,
-                'price_morning' => $validated['price_morning'],
-                'price_evening' => $validated['price_evening'], 
+                'name' => $validated['name'] ?? $field->name,
+                'price_morning' => $validated['price_morning'] ?? $field->price_morning,
+                'price_evening' => $validated['price_evening'] ?? $field->price_evening, 
             ]);
 
             return $this->sendResponse(['field' => $field], 'Campo actualizado exitosamente');

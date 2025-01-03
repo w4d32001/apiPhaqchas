@@ -12,6 +12,7 @@ class Field extends Model
     use HasFactory;
     protected $fillable = [
         'field_type_id',
+        'name',
         'price_morning',
         'price_evening',
         'status',

@@ -23,6 +23,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'field_type_id' => ['required', 'exists:field_types,id'],
+            'name' => ['required'],
             'price_morning' => ['required', 'numeric'],
             'price_evening' => ['required', 'numeric']
         ];

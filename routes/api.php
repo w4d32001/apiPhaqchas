@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\auth\AuthController;
+use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Field\FieldController;
 use App\Http\Controllers\Field\FieldTypeController;
 use Illuminate\Http\Request;
@@ -36,3 +37,5 @@ Route::group([
 
 Route::apiResource('fieldType', FieldTypeController::class);
 Route::apiResource('field', FieldController::class);
+Route::apiResource('booking', BookingController::class);
+Route::get('test/{courtId}/{start}/{end}', [BookingController::class, 'test']);
