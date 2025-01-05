@@ -24,5 +24,13 @@ class UserSeeder extends Seeder
             'status' => 1,
             'rol_id' => 1, 
         ]);
+        User::create([
+            'name' => 'w4d3',
+            'surname' => 'nistrador',
+            'email' => 'correo1@example.com',
+            'password' => Hash::make('12345678'),
+            'dni' => '12345673',
+            'phone' => '987654323',
+        ]);
     }
 }

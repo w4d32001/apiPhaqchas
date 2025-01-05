@@ -21,7 +21,7 @@ return new class extends Migration
             $table->char('dni', 8)->unique();
             $table->char('phone', 9)->unique();
             $table->tinyInteger('status')->default(1);
-            $table->unsignedBigInteger('rol_id');
+            $table->unsignedBigInteger('rol_id')->default(2);
             $table->rememberToken();
             $table->timestamps();
         });
