@@ -4,19 +4,21 @@ namespace App\Http\Controllers\auth;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\User;
 
 class AuthController extends Controller
 {
+    
     /**
      * Crear una nueva instancia del AuthController.
      *
      * @return void
      */
     public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login']]);
-    }
+{
+    $this->middleware('auth:api', ['except' => ['register', 'login']]);
+}
 
     /**
      * Iniciar sesión y obtener un token JWT.
@@ -58,6 +60,26 @@ class AuthController extends Controller
 
         return $this->respondWithToken($token);
     }
+
+    public function register(RegisterRequest $request)
+{
+    try {
+        $validated = $request->validated(); 
+        $user = User::create($validated); 
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario creado exitosamente.',
+            'data' => $user
+        ], 201);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al registrar el usuario.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 
     /**
      * Obtener el usuario autenticado.
@@ -159,7 +181,5 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(){
-        
-    }
+    
 }
