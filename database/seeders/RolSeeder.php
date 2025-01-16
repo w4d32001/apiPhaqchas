@@ -18,6 +18,10 @@ class RolSeeder extends Seeder
             'description' => 'Tiene acceso completo al sistema.',
         ]);
         Rol::create([
+            'name' => 'Trabajador',
+            'description' => 'Tiene acceso completo a las reservas del sistema.',
+        ]);
+        Rol::create([
             'name' => 'Usuario',
             'description' => 'Tiene acceso limitado al sistema.',
         ]);

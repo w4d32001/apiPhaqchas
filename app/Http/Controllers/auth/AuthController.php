@@ -52,13 +52,18 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['email', 'password']);
-
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        $credentials = request(['dni', 'password']);
+        try {
+            if (! $token = auth()->attempt($credentials)) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+    
+            return $this->respondWithToken($token);
+        } catch (\Exception $e) {
+            return response()->json(["message" => $e->getMessage()]);
         }
 
-        return $this->respondWithToken($token);
+       
     }
 
     public function register(RegisterRequest $request)

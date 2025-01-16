@@ -18,8 +18,8 @@ return new class extends Migration
             $table->date('booking_date');
             $table->time('start_time');
             $table->time('end_time');
-            $table->enum('status', ['reservado', 'disponible']);
-            $table->decimal('total', 10,2);
+            $table->enum('status', ['reservado', 'disponible', 'en espera']);
+            $table->decimal('precio', 10,2)->nullable();
             $table->timestamps();
         });
     }

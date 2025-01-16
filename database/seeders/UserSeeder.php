@@ -17,7 +17,6 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'admi',
             'surname' => 'nistrador',
-            'email' => 'correo@example.com',
             'password' => Hash::make('12345678'),
             'dni' => '12345678',
             'phone' => '987654321',
@@ -25,9 +24,17 @@ class UserSeeder extends Seeder
             'rol_id' => 1, 
         ]);
         User::create([
+            'name' => 'traba',
+            'surname' => 'jador',
+            'password' => Hash::make('12345678'),
+            'dni' => '98765432',
+            'phone' => '123456789',
+            'status' => 1,
+            'rol_id' => 2, 
+        ]);
+        User::create([
             'name' => 'w4d3',
             'surname' => 'nistrador',
-            'email' => 'correo1@example.com',
             'password' => Hash::make('12345678'),
             'dni' => '12345673',
             'phone' => '987654323',

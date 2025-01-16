@@ -20,13 +20,81 @@ class BookingSeeder extends Seeder
     Booking::create([
         'user_id' => 1,
         'field_id' => 1,
+        'booking_date' => "2025-01-15",
+        'start_time' => "14:00",
+        'end_time' => "15:00",
+        'status' => 'en espera',
+        'precio' => 0, 
+    ]);
+
+    Booking::create([
+        'user_id' => 1,
+        'field_id' => 1,
         'booking_date' => "2025-01-03",
         'start_time' => "19:00",
         'end_time' => "20:00",
         'status' => 'Reservado',
-        'total' => 12, 
+        'precio' => 20, 
     ]);
 
+    Booking::create([
+        'user_id' => 1,
+        'field_id' => 2,
+        'booking_date' => "2025-01-16",
+        'start_time' => "08:00",
+        'end_time' => "09:00",
+        'status' => 'en espera',
+        'precio' => 0, 
+    ]);
 
-    }
+    Booking::create([
+        'user_id' => 1,
+        'field_id' => 3,
+        'booking_date' => "2025-01-15",
+        'start_time' => "15:00",
+        'end_time' => "16:00",
+        'status' => 'Reservado',
+        'precio' => 20, 
+    ]);
+
+    Booking::create([
+        'user_id' => 1,
+        'field_id' => 4,
+        'booking_date' => "2025-01-15",
+        'start_time' => "11:00",
+        'end_time' => "12:00",
+        'status' => 'en espera',
+        'precio' => 0, 
+    ]);
+
+    Booking::create([
+        'user_id' => 1,
+        'field_id' => 1,
+        'booking_date' => "2025-01-17",
+        'start_time' => "12:00",
+        'end_time' => "13:00",
+        'status' => 'Reservado',
+        'precio' => 20, 
+    ]);
+
+    Booking::create([
+        'user_id' => 1,
+        'field_id' => 1,
+        'booking_date' => "2025-01-17",
+        'start_time' => "15:00",
+        'end_time' => "16:00",
+        'status' => 'Reservado',
+        'precio' => 20, 
+    ]);
+
+    Booking::create([
+        'user_id' => 1,
+        'field_id' => 2,
+        'booking_date' => "2025-01-18",
+        'start_time' => "09:00",
+        'end_time' => "10:00",
+        'status' => 'en espera',
+        'precio' => 0, 
+    ]);
+}
 }

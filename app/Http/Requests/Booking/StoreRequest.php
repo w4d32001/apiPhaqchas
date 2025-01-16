@@ -24,7 +24,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-           'user_id' => ['required', 'exists:users,id'],
+            'user_id' => ['required', 'exists:users,id'],
             'field_id' => ['required'],
             'booking_date' => ['required', 'date', 'after_or_equal:today'],
             'start_time' => ['required', 'date_format:H:i'],
@@ -38,14 +38,12 @@ class StoreRequest extends FormRequest
             $start = Carbon::createFromFormat('H:i', $this->start_time);
             $end = Carbon::createFromFormat('H:i', $this->end_time);
 
-            // Validar bloques de horas completas
             if (!$end->isAfter($start)) {
                 $validator->errors()->add('end_time', 'El horario de fin debe ser posterior al inicio.');
             } elseif ($end->diffInMinutes($start) % 60 !== 0) {
                 $validator->errors()->add('end_time', 'La duración debe ser en bloques de horas completas.');
             }
 
-            // Validar horarios dentro del rango permitido
             if ($start->hour < 8 || $start->hour >= 22) {
                 $validator->errors()->add('start_time', 'El horario de inicio debe estar entre las 08:00 y las 22:00.');
             }

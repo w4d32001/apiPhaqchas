@@ -17,7 +17,7 @@ class Booking extends Model
         'start_time',
         'end_time',
         'status',
-        'total',
+        'price',
     ];
 
     public function user():BelongsTo

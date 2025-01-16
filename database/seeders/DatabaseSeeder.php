@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use Database\Seeders\Booking\BookingSeeder;
+use Database\Seeders\Field\FieldSeeder;
 use Database\Seeders\Field\FieldTypeSeeder;
 use Illuminate\Database\Seeder;
 
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder
             RolSeeder::class,
            UserSeeder::class,
             FieldTypeSeeder::class,
+            FieldSeeder::class,
             BookingSeeder::class
         ]);
     }

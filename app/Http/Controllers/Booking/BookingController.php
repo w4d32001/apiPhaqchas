@@ -56,7 +56,7 @@ class BookingController extends Controller
 
     public function test1($courtId, $start, $end)
 {
-    $hours = collect(range(8, 22))->map(function ($hour) {
+    $hours = collect(range(8, 21))->map(function ($hour) {
         return sprintf('%02d:00:00', $hour);
     });
 
@@ -108,7 +108,7 @@ class BookingController extends Controller
     public function test($courtId, $start, $end)
     {
 
-        $hours = collect(range(8, 22))->map(function ($hour) {
+        $hours = collect(range(8, 21))->map(function ($hour) {
             return sprintf('%02d:00:00', $hour);
         });
 
@@ -150,6 +150,48 @@ class BookingController extends Controller
                 ]);
 
                 $row[$dayName] = $status;
+            }
+
+            $results[] = $row;
+        }
+
+        return response()->json($results);
+    }
+    public function test2($courtId, $start, $end)
+    {
+
+        $hours = collect(range(8, 21))->map(function ($hour) {
+            return sprintf('%02d:00:00', $hour);
+        });
+
+        $daysOfWeek = [
+            2 => 'Lunes',
+            3 => 'Martes',
+            4 => 'Miercoles',
+            5 => 'Jueves',
+            6 => 'Viernes',
+            7 => 'Sabado',
+            1 => 'Domingo',
+        ];
+
+        $results = [];
+
+        foreach ($hours as $hour) {
+            $row = [
+                'hour' => Carbon::parse($hour)->format('h:i A') . ' - ' . Carbon::parse($hour)->addHour()->format('h:i A'),
+            ];
+
+            foreach ($daysOfWeek as $dayNumber => $dayName) {
+                $booking = DB::table('bookings')
+                    ->where('field_id', $courtId)
+                    ->where('start_time', $hour)
+                    ->whereRaw('DAYOFWEEK(booking_date) = ?', [$dayNumber])
+                    ->whereBetween('booking_date', [$start, $end])
+                    ->first();
+                    $status = $booking ? $booking->status : 'disponible';
+                   
+                    $row[$dayName] = $status;
+                
             }
 
             $results[] = $row;
