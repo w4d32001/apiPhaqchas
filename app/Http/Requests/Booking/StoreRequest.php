@@ -25,8 +25,8 @@ class StoreRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'exists:users,id'],
-            'field_id' => ['required'],
-            'sport_id' => ['required'],
+            'field_id' => ['required', 'exists:fields,id'],
+            'sport_id' => ['required', 'exists:sports,id'],
             'booking_date' => ['required', 'date', 'after_or_equal:today'],
             'start_time' => ['required', 'date_format:H:i'],
             'end_time' => ['required', 'date_format:H:i'],

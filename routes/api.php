@@ -43,9 +43,8 @@ Route::group([
 Route::apiResource('fieldType', FieldTypeController::class);
 Route::apiResource('field', FieldController::class);
 Route::apiResource('booking', BookingController::class);
-Route::get('test/{courtId}/{start}/{end}', [BookingController::class, 'test']);
-Route::get('test1/{courtId}/{start}/{end}', [BookingController::class, 'test1']);
-Route::get('test2/{courtId}/{start}/{end}', [BookingController::class, 'test2']);
+Route::get('bookingsForAdmi/{courtId}/{start}/{end}', [BookingController::class, 'bookingsForAdmi']);
+Route::get('bookingsForLandingPage/{courtId}/{start}/{end}', [BookingController::class, 'bookingsForLandingPage']);
 
 Route::apiResource('customer', CustomerController::class);
 
