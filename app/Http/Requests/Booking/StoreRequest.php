@@ -26,10 +26,12 @@ class StoreRequest extends FormRequest
         return [
             'user_id' => ['required', 'exists:users,id'],
             'field_id' => ['required'],
+            'sport_id' => ['required'],
             'booking_date' => ['required', 'date', 'after_or_equal:today'],
             'start_time' => ['required', 'date_format:H:i'],
             'end_time' => ['required', 'date_format:H:i'],
-            'total' => ['required', 'numeric'],
+            'price' => ['nullable', 'numeric'],
+            'yape' => ['nullable', 'numeric'],
         ];
     }
     protected function withValidator(Validator $validator)

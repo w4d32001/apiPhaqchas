@@ -26,6 +26,8 @@ class BookingController extends Controller
     {
         try {
             $validation = $request->all();
+            $validation['total'] = $validation['price'] + $validation['yape'];
+            
             $booking =  Booking::create($validation);
             return $this->sendResponse(['booking' => $booking], "Reserva creada", 'success', 201);
         } catch (\Exception $e) {

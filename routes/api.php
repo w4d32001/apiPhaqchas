@@ -6,6 +6,7 @@ use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Field\FieldController;
 use App\Http\Controllers\Field\FieldTypeController;
+use App\Http\Controllers\Sport\SportController;
 use App\Http\Controllers\User\AdmiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -53,3 +54,6 @@ Route::get('annoucement/updateStatus/{id}', [AnnouncementController::class, 'upd
 Route::post('annoucement/updateImage/{id}', [AnnouncementController::class, 'updateImage']);
 
 Route::apiResource('admi', AdmiController::class);
+
+Route::apiResource('sport', SportController::class);
+Route::post('sport/updatePrice/{id}', [SportController::class, 'updatePrice']);

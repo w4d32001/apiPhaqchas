@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
            UserSeeder::class,
             FieldTypeSeeder::class,
             FieldSeeder::class,
-            BookingSeeder::class
+            //BookingSeeder::class
         ]);
     }
 }

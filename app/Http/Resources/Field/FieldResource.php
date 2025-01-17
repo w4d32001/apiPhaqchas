@@ -20,7 +20,7 @@ class FieldResource extends JsonResource
             'price_morning' => $this->price_morning,
             'price_evening' => $this->price_evening,
             'name' => $this->name,
-            'status' => $this->status
+            'status' => $this->status,
         ];
     }
 }

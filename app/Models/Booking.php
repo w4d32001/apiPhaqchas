@@ -18,16 +18,23 @@ class Booking extends Model
         'end_time',
         'status',
         'price',
+        'yape',
+        'total',
+        'sport_id'
     ];
 
-    public function user():BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function field():BelongsTo
+    public function field(): BelongsTo
     {
         return $this->belongsTo(Field::class);
     }
 
+    public function sport(): BelongsTo
+    {
+        return $this->belongsTo(Sport::class);
+    }
 }
