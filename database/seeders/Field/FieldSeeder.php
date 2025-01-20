@@ -14,31 +14,19 @@ class FieldSeeder extends Seeder
     public function run(): void
     {
         Field::create([
-            "field_type_id" => 1,
-            "name" => "Campo 4",
-            "price_morning" => "15",
-            "price_evening" => "20"
+            "name" => "Campo 1",
         ]);
 
         Field::create([
-            "field_type_id" => 1,
-            "name" => "Campo 4",
-            "price_morning" => "15",
-            "price_evening" => "20"
+            "name" => "Campo 2",
         ]);
 
         Field::create([
-            "field_type_id" => 1,
-            "name" => "Campo 4",
-            "price_morning" => "15",
-            "price_evening" => "20"
+            "name" => "Campo 3",
         ]);
 
         Field::create([
-            "field_type_id" => 1,
             "name" => "Campo 4",
-            "price_morning" => "15",
-            "price_evening" => "20"
         ]);
     }
 }

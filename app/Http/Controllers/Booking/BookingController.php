@@ -17,7 +17,7 @@ class BookingController extends Controller
     {
         try {
             $bookings = Booking::all();
-            return $this->sendResponse(['booking' => $bookings], "Lista de reservas");
+            return $this->sendResponse($bookings, "Lista de reservas");
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage());
         }
@@ -33,7 +33,7 @@ class BookingController extends Controller
 
             $startTime = Carbon::createFromFormat('H:i', $validation['start_time']);
 
-            if ($startTime->hour < 14) {
+            if ($startTime->hour < 15) {
                 if ($validation['total'] > $sport->price_morning) {
                     return $this->sendError('El precio total excede al precio de la cancha en la mañana.');
                 }
@@ -74,6 +74,20 @@ class BookingController extends Controller
             return $this->sendResponse([], 'Reserva eliminada');
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage());
+        }
+    }
+
+    public function completePayment($id){
+        try{
+            $booking = Booking::findOrFail($id);
+
+            $booking->update([
+                'status' => 'completado',
+
+            ]);
+
+        }catch(\Exception $e){
+            return $this->sendError('Error: '.$e->getMessage());
         }
     }
 
@@ -170,15 +184,6 @@ class BookingController extends Controller
                 $status = $booking ? $booking->status : 'disponible';
 
                 $row[$dayName] = $status;
-                Log::info([
-                    'field_id' => $courtId,
-                    'hour' => $hour,
-                    'day' => $dayName,
-                    'booking_date' => $booking ? $booking->booking_date : 'N/A',
-                    'status' => $status,
-                    'start' => $start,
-                    'end' => $end,
-                ]);
             }
 
 
@@ -187,4 +192,73 @@ class BookingController extends Controller
 
         return response()->json($results);
     }
+
+    public function bookingsForAdmiMonth($courtId, $start, $end)
+{
+    $hours = collect(range(8, 21))->map(function ($hour) {
+        return sprintf('%02d:00:00', $hour);
+    });
+
+    $daysOfWeek = [
+        2 => 'Lunes',
+        3 => 'Martes',
+        4 => 'Miércoles',
+        5 => 'Jueves',
+        6 => 'Viernes',
+        7 => 'Sábado',
+        1 => 'Domingo',
+    ];
+
+    $dailyTotals = array_fill_keys(array_keys($daysOfWeek), 0);
+
+    $results = collect($hours)->map(function ($hour) use ($courtId, $start, $end, $daysOfWeek, &$dailyTotals) {
+        $row = [
+            'hour_range' => [
+                'start' => Carbon::parse($hour)->format('h:i A'),
+                'end' => Carbon::parse($hour)->addHour()->format('h:i A'),
+            ],
+            'days' => [],
+        ];
+
+        foreach ($daysOfWeek as $dayNumber => $dayName) {
+            $booking = DB::table('bookings')
+                ->join('users', 'bookings.user_id', '=', 'users.id')
+                ->select(
+                    'bookings.*',
+                )
+                ->where('field_id', $courtId)
+                ->where('start_time', $hour)
+                ->whereRaw('DAYOFWEEK(booking_date) = ?', [$dayNumber])
+                ->whereBetween('booking_date', [$start, $end])
+                ->first();
+
+            $total = $booking->total ?? 0;
+
+            $dailyTotals[$dayNumber] += $total;
+
+            $row['days'][] = [
+                'day_name' => $dayName,
+                'status' => $booking->status ?? "disponible",
+                'booking_details' => $booking ? [
+                    'id' => $booking->id,
+                    'total' => $total,
+                ] : null,
+            ];
+        }
+
+        return $row;
+    });
+
+    $totalsByDay = [];
+    foreach ($daysOfWeek as $dayNumber => $dayName) {
+        $totalsByDay[] = [
+            'day_name' => $dayName,
+            'total' => $dailyTotals[$dayNumber],
+        ];
+    }
+
+    return $this->sendResponse(['schedule' => $results, 'totals_by_day' => $totalsByDay], "Tabla de reservas");
 }
+
+}
+

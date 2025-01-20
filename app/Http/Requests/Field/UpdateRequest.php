@@ -22,9 +22,6 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'field_type_id' => ['required', 'exists:field_types,id'],
-            'price_morning' => ['required', 'numeric'],
-            'price_evening' => ['required', 'numeric'],
             'name' => ['required']
         ];
     }

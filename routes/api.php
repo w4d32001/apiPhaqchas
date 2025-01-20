@@ -5,7 +5,6 @@ use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Field\FieldController;
-use App\Http\Controllers\Field\FieldTypeController;
 use App\Http\Controllers\Sport\SportController;
 use App\Http\Controllers\User\AdmiController;
 use Illuminate\Http\Request;
@@ -40,11 +39,11 @@ Route::group([
 
 });
 
-Route::apiResource('fieldType', FieldTypeController::class);
 Route::apiResource('field', FieldController::class);
 Route::apiResource('booking', BookingController::class);
 Route::get('bookingsForAdmi/{courtId}/{start}/{end}', [BookingController::class, 'bookingsForAdmi']);
 Route::get('bookingsForLandingPage/{courtId}/{start}/{end}', [BookingController::class, 'bookingsForLandingPage']);
+Route::get('bookingsForAdmiMonth/{courtId}/{start}/{end}', [BookingController::class, 'bookingsForAdmiMonth']);
 
 Route::apiResource('customer', CustomerController::class);
 
