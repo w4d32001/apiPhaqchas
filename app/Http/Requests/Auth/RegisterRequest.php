@@ -23,9 +23,9 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'password' => ['required'],
+            'password' => ['required', 'min:8'],
             'surname' => ['required'],
-            'dni' => ['nullable', 'unique:users', 'digits:8'],
+            'dni' => ['required', 'unique:users', 'digits:8'],
             'phone' => ['required', 'unique:users', 'digits:9'],
             'rol_id' => ['nullable', 'exists:rols,id'],
             'address' => ['nullable']
