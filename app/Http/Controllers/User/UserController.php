@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     public function index()
     {
-       
+       try{
+              $users = User::where('rol_id', 3)->get();
+              return $this->sendResponse($users, "Lista de usuarios");
+       }catch(\Exception $e){
+           return $this->sendError($e->getMessage());
+       }
     }
 
     /**
@@ -23,9 +29,13 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        try {
+            return $this->sendResponse($user, 'Usuario encontrado');
+        } catch (\Exception $e) {
+            return $this->sendError('Error: ' . $e->getMessage());
+        }
     }
 
     /**

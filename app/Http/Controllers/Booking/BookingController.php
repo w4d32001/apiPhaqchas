@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Booking\StoreRequest;
 use App\Models\Booking;
 use App\Models\Sport;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -96,6 +97,26 @@ class BookingController extends Controller
 
             // ]);
             return response()->json($sport[0]->price_morning);
+
+        }catch(\Exception $e){
+            return $this->sendError('Error: '.$e->getMessage());
+        }
+    }
+
+    public function cancelBooking($id){
+        try{
+            $booking = Booking::findOrFail($id);
+
+            $booking->update([
+                'status' => 'cancelado',
+            ]);
+
+            $user = User::findOrFail($booking->user_id);
+            $user->update([
+                'faults' => $user->faults + 1,
+            ]);
+
+            return $this->sendResponse($booking, 'Reserva cancelada correctamente');
 
         }catch(\Exception $e){
             return $this->sendError('Error: '.$e->getMessage());

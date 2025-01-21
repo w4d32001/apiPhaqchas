@@ -52,6 +52,7 @@ Route::get('annoucement/updateStatus/{id}', [AnnouncementController::class, 'upd
 Route::post('annoucement/updateImage/{id}', [AnnouncementController::class, 'updateImage']);
 
 Route::apiResource('admi', AdmiController::class);
+Route::post('admi/updateAdmi/{admi}/{id}', [AdmiController::class, 'updateAdmi']);
 
 Route::apiResource('sport', SportController::class);
 Route::post('sport/updatePrice/{id}', [SportController::class, 'updatePrice']);
