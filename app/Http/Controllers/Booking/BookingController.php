@@ -81,10 +81,21 @@ class BookingController extends Controller
         try{
             $booking = Booking::findOrFail($id);
 
-            $booking->update([
-                'status' => 'completado',
+            $sport = DB::table('bookings')
+            ->join('sports', 'bookings.id', '=', 'sports.id')
+            ->select('sports.price_morning', 'sports.price_evening')
+            ->where('bookings.sport_id', $booking->sport_id)
+            ->get();
 
-            ]);
+            if(!$sport){
+                return $this->sendError('No se encontró información del deporte asociado.');
+            }
+
+            // $booking->update([
+            //     'status' => 'completado',
+
+            // ]);
+            return response()->json($sport[0]->price_morning);
 
         }catch(\Exception $e){
             return $this->sendError('Error: '.$e->getMessage());

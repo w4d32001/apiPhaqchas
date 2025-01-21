@@ -19,7 +19,9 @@ return new class extends Migration
             $table->string('password');
             $table->char('dni', 8)->unique()->nullable();
             $table->char('phone', 9)->unique();
+            $table->string('address')->nullable();
             $table->tinyInteger('status')->default(1);
+            $table->integer('faults')->default(0);
             $table->unsignedBigInteger('rol_id')->default(3);
             $table->rememberToken();
             $table->timestamps();
