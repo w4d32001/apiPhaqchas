@@ -63,6 +63,9 @@ class FieldController extends Controller
     public function destroy(Field $field)
     {
         try {
+            if($field->bookings()->count() > 0) {
+                return $this->sendError('No se puede eliminar el campo porque tiene reservas asociadas');
+            }
             $field->delete();
             return $this->sendResponse([], 'Campo eliminado exitosamente');
         } catch (\Exception $e) {
