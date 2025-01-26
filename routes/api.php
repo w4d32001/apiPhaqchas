@@ -60,4 +60,4 @@ Route::apiResource('sport', SportController::class);
 Route::post('sport/updatePrice/{id}', [SportController::class, 'updatePrice']);
 
 
-Route::get('completePayment/{id}', [BookingController::class, 'completePayment']);
+Route::post('completePayment/{id}', [BookingController::class, 'completePayment']);

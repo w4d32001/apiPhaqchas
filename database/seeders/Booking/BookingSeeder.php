@@ -22,24 +22,24 @@ class BookingSeeder extends Seeder
         'field_id' => 1,
         'sport_id' => 1,        
         'booking_date' => "2025-01-27",
-        'start_time' => "08:00",
-        'end_time' => "09:00",
+        'start_time' => "11:00",
+        'end_time' => "12:00",
         'status' => 'reservado',
-        'price' => 15, 
-        'yape' => 5,
-        'total' => 20
+        'price' => 0, 
+        'yape' => 10,
+        'total' => 10
     ]);
-    Booking::create([
-        'user_id' => 1,
-        'field_id' => 1,
-        'sport_id' => 1,        
-        'booking_date' => "2025-01-28",
-        'start_time' => "09:00",
-        'end_time' => "10:00",
-        'status' => 'reservado',
-        'price' => 15, 
-        'yape' => 5,
-        'total' => 20
-    ]);
+    // Booking::create([
+    //     'user_id' => 1,
+    //     'field_id' => 1,
+    //     'sport_id' => 1,        
+    //     'booking_date' => "2025-01-28",
+    //     'start_time' => "09:00",
+    //     'end_time' => "10:00",
+    //     'status' => 'reservado',
+    //     'price' => 15, 
+    //     'yape' => 5,
+    //     'total' => 20
+    // ]);
 }
 }

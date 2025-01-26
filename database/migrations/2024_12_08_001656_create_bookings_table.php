@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('booking_date');
             $table->time('start_time');
             $table->time('end_time');
-            $table->enum('status', ['reservado', 'disponible', 'en espera']);
+            $table->enum('status', ['reservado', 'disponible', 'en espera', 'completado']);
             $table->decimal('price', 10,2)->nullable();
             $table->decimal('yape', 10, 2)->nullable();
             $table->decimal('total', 10, 2);

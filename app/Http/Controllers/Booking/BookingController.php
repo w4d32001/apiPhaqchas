@@ -110,26 +110,64 @@ class BookingController extends Controller
         }
     }
 
-    public function completePayment($id)
+    public function completePayment($id, Request $request)
     {
         try {
             $booking = Booking::findOrFail($id);
 
-            $sport = DB::table('bookings')
-                ->join('sports', 'bookings.id', '=', 'sports.id')
-                ->select('sports.price_morning', 'sports.price_evening')
-                ->where('bookings.sport_id', $booking->sport_id)
-                ->get();
+            $sport = DB::table('sports')
+                ->select('price_morning', 'price_evening')
+                ->where('id', $booking->sport_id)
+                ->first();
 
             if (!$sport) {
                 return $this->sendError('No se encontró información del deporte asociado.');
             }
 
-            // $booking->update([
-            //     'status' => 'completado',
+            $price = $request->input('price');
+            $yape = $request->input('yape');
 
-            // ]);
-            return response()->json($sport[0]->price_morning);
+            if (empty($price) && empty($yape)) {
+                return $this->sendError('Debe proporcionar al menos un tipo de pago (price o yape).');
+            }
+            $currentHour = now()->hour;
+            if (!empty($price)) {
+
+
+                if ($currentHour >= 8 && $currentHour < 15) {
+                    $paymentPrice = $sport->price_morning;
+                } else {
+                    $paymentPrice = $sport->price_evening;
+                }
+                $booking->update([
+                    'price' => $booking->price + $paymentPrice,
+                ]);
+                $paymentType = 'contado';
+                
+            } else {
+                if ($currentHour >= 8 && $currentHour < 15) {
+                    $paymentPrice = $sport->price_morning;
+                } else {
+                    $paymentPrice = $sport->price_evening;
+                }
+                $booking->update([
+                    'yape' => $booking->yape + $paymentPrice,
+                ]);
+                $paymentType = 'Yape';
+            }
+
+            $total = $booking->total + $paymentPrice;
+
+            $booking->update([
+                'status' => 'completado',
+                'total' => $total,
+            ]);
+
+            return response()->json([
+                'message' => 'Pago completado exitosamente.',
+                'total' => $total,
+                'paymentType' => $paymentType,
+            ]);
         } catch (\Exception $e) {
             return $this->sendError('Error: ' . $e->getMessage());
         }
