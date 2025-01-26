@@ -257,53 +257,53 @@ class BookingController extends Controller
         return response()->json($results);
     }
 
-    public function bookingsForAdmiMonth($courtIds, $start, $end)
-{
-    $dates = CarbonPeriod::create($start, $end)->toArray(); // Genera las fechas dentro del rango.
-    $fields = DB::table('fields')->whereIn('id', $courtIds)->pluck('name', 'id'); // Obtiene los nombres de los campos.
+    public function bookingsForAdmiMonth($month, $year)
+    {
+        $start = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        $end = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+        $dates = CarbonPeriod::create($start, $end)->toArray();
 
-    // Consulta las reservas agrupadas por fecha y campo.
-    $bookings = DB::table('bookings')
-        ->select(
-            DB::raw('DATE(booking_date) as date'),
-            'field_id',
-            DB::raw('SUM(total) as total')
-        )
-        ->whereBetween('booking_date', [$start, $end])
-        ->groupBy('date', 'field_id')
-        ->get()
-        ->groupBy('date'); // Agrupa por fecha.
+        $fields = DB::table('fields')->pluck('name', 'id');
 
-    // Construir la estructura deseada.
-    $results = collect($dates)->map(function ($date) use ($fields, $bookings) {
-        $dateStr = $date->format('Y-m-d');
-        $fieldsData = collect($fields)->map(function ($fieldName, $fieldId) use ($bookings, $dateStr) {
-            $booking = $bookings[$dateStr]->firstWhere('field_id', $fieldId) ?? null;
+        $bookings = DB::table('bookings')
+            ->select(
+                DB::raw('DATE(booking_date) as date'),
+                'field_id',
+                DB::raw('SUM(total) as total')
+            )
+            ->whereBetween('booking_date', [$start, $end])
+            ->groupBy('date', 'field_id')
+            ->get()
+            ->groupBy('date');
+        Log::info($bookings);
+
+        $results = collect($dates)->map(function ($date) use ($fields, $bookings) {
+            $dateStr = $date->format('Y-m-d');
+            $fieldsData = collect($fields)->map(function ($fieldName, $fieldId) use ($bookings, $dateStr) {
+                $booking = collect($bookings[$dateStr] ?? [])->firstWhere('field_id', $fieldId);
+                return [
+                    'field' => $fieldName,
+                    'total' => $booking->total ?? 0,
+                ];
+            });
+
+            $totalMonth = $fieldsData->sum('total');
+
             return [
-                'field' => $fieldName,
-                'total' => $booking->total ?? 0,
+                'date' => $dateStr,
+                'fields' => $fieldsData->values()->toArray(),
+                'totalMonth' => $totalMonth,
             ];
         });
 
-        $totalMonth = $fieldsData->sum('total');
+        $fieldTotals = collect($fields)->mapWithKeys(function ($fieldName, $fieldId) use ($bookings) {
+            $total = $bookings->flatten(1)->where('field_id', $fieldId)->sum('total');
+            return [$fieldName => $total];
+        });
 
-        return [
-            'date' => $dateStr,
-            'fields' => $fieldsData->values()->toArray(),
-            'totalMonth' => $totalMonth,
-        ];
-    });
-
-    // Totales por campo.
-    $fieldTotals = collect($fields)->mapWithKeys(function ($fieldName, $fieldId) use ($bookings) {
-        $total = $bookings->flatten(1)->where('field_id', $fieldId)->sum('total');
-        return [$fieldName => $total];
-    });
-
-    return $this->sendResponse([
-        'bookings' => $results->toArray(),
-        'fieldTotals' => $fieldTotals,
-    ], "Tabla de reservas");
-}
-
+        return $this->sendResponse([
+            'bookings' => $results->toArray(),
+            'fieldTotals' => $fieldTotals,
+        ], "Tabla de reservas para el mes");
+    }
 }

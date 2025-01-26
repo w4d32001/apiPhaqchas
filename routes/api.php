@@ -44,7 +44,7 @@ Route::apiResource('field', FieldController::class);
 Route::apiResource('booking', BookingController::class);
 Route::get('bookingsForAdmi/{courtId}/{start}/{end}', [BookingController::class, 'bookingsForAdmi']);
 Route::get('bookingsForLandingPage/{courtId}/{start}/{end}', [BookingController::class, 'bookingsForLandingPage']);
-Route::get('bookingsForAdmiMonth/{courtId}/{start}/{end}', [BookingController::class, 'bookingsForAdmiMonth']);
+Route::get('bookingsForAdmiMonth/{month}/{year}', [BookingController::class, 'bookingsForAdmiMonth']);
 
 Route::apiResource('customer', CustomerController::class);
 
