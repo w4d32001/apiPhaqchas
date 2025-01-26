@@ -21,6 +21,7 @@ return new class extends Migration
             $table->char('phone', 9)->unique();
             $table->string('address')->nullable();
             $table->tinyInteger('status')->default(1);
+            $table->date('birthday')->nullable();
             $table->integer('faults')->default(0);
             $table->unsignedBigInteger('rol_id')->default(3);
             $table->rememberToken();

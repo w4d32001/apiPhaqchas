@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\Sport;
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -66,7 +67,38 @@ class BookingController extends Controller
         }
     }
 
-    public function update(StoreRequest $request, Booking $booking) {}
+    public function update(StoreRequest $request, Booking $booking)
+    {
+        try {
+            $validation = $request->all();
+            $validation['total'] = ($validation['price'] ?? 0) + ($validation['yape'] ?? 0);
+
+            $sport = Sport::findOrFail($validation['sport_id']);
+
+            $startTime = Carbon::createFromFormat('H:i', $validation['start_time']);
+
+            if ($startTime->hour < 15) {
+                if ($validation['total'] > $sport->price_morning) {
+                    return $this->sendError('El precio total excede al precio de la cancha en la mañana.');
+                }
+            } else {
+                if ($validation['total'] > $sport->price_evening) {
+                    return $this->sendError('El precio total excede al precio de la cancha en la tarde.');
+                }
+            }
+
+            if ($validation['total'] > 0) {
+                $validation['status'] = 'reservado';
+            } else {
+                $validation['status'] = 'en espera';
+            }
+
+            $booking->update($validation);
+            return $this->sendResponse($booking, 'Reserva actualizada');
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+    }
 
     public function destroy(Booking $booking)
     {
@@ -78,17 +110,18 @@ class BookingController extends Controller
         }
     }
 
-    public function completePayment($id){
-        try{
+    public function completePayment($id)
+    {
+        try {
             $booking = Booking::findOrFail($id);
 
             $sport = DB::table('bookings')
-            ->join('sports', 'bookings.id', '=', 'sports.id')
-            ->select('sports.price_morning', 'sports.price_evening')
-            ->where('bookings.sport_id', $booking->sport_id)
-            ->get();
+                ->join('sports', 'bookings.id', '=', 'sports.id')
+                ->select('sports.price_morning', 'sports.price_evening')
+                ->where('bookings.sport_id', $booking->sport_id)
+                ->get();
 
-            if(!$sport){
+            if (!$sport) {
                 return $this->sendError('No se encontró información del deporte asociado.');
             }
 
@@ -97,14 +130,14 @@ class BookingController extends Controller
 
             // ]);
             return response()->json($sport[0]->price_morning);
-
-        }catch(\Exception $e){
-            return $this->sendError('Error: '.$e->getMessage());
+        } catch (\Exception $e) {
+            return $this->sendError('Error: ' . $e->getMessage());
         }
     }
 
-    public function cancelBooking($id){
-        try{
+    public function cancelBooking($id)
+    {
+        try {
             $booking = Booking::findOrFail($id);
 
             $booking->update([
@@ -117,9 +150,8 @@ class BookingController extends Controller
             ]);
 
             return $this->sendResponse($booking, 'Reserva cancelada correctamente');
-
-        }catch(\Exception $e){
-            return $this->sendError('Error: '.$e->getMessage());
+        } catch (\Exception $e) {
+            return $this->sendError('Error: ' . $e->getMessage());
         }
     }
 
@@ -225,72 +257,53 @@ class BookingController extends Controller
         return response()->json($results);
     }
 
-    public function bookingsForAdmiMonth($courtId, $start, $end)
+    public function bookingsForAdmiMonth($courtIds, $start, $end)
 {
-    $hours = collect(range(8, 21))->map(function ($hour) {
-        return sprintf('%02d:00:00', $hour);
-    });
+    $dates = CarbonPeriod::create($start, $end)->toArray(); // Genera las fechas dentro del rango.
+    $fields = DB::table('fields')->whereIn('id', $courtIds)->pluck('name', 'id'); // Obtiene los nombres de los campos.
 
-    $daysOfWeek = [
-        2 => 'Lunes',
-        3 => 'Martes',
-        4 => 'Miércoles',
-        5 => 'Jueves',
-        6 => 'Viernes',
-        7 => 'Sábado',
-        1 => 'Domingo',
-    ];
+    // Consulta las reservas agrupadas por fecha y campo.
+    $bookings = DB::table('bookings')
+        ->select(
+            DB::raw('DATE(booking_date) as date'),
+            'field_id',
+            DB::raw('SUM(total) as total')
+        )
+        ->whereBetween('booking_date', [$start, $end])
+        ->groupBy('date', 'field_id')
+        ->get()
+        ->groupBy('date'); // Agrupa por fecha.
 
-    $dailyTotals = array_fill_keys(array_keys($daysOfWeek), 0);
-
-    $results = collect($hours)->map(function ($hour) use ($courtId, $start, $end, $daysOfWeek, &$dailyTotals) {
-        $row = [
-            'hour_range' => [
-                'start' => Carbon::parse($hour)->format('h:i A'),
-                'end' => Carbon::parse($hour)->addHour()->format('h:i A'),
-            ],
-            'days' => [],
-        ];
-
-        foreach ($daysOfWeek as $dayNumber => $dayName) {
-            $booking = DB::table('bookings')
-                ->join('users', 'bookings.user_id', '=', 'users.id')
-                ->select(
-                    'bookings.*',
-                )
-                ->where('field_id', $courtId)
-                ->where('start_time', $hour)
-                ->whereRaw('DAYOFWEEK(booking_date) = ?', [$dayNumber])
-                ->whereBetween('booking_date', [$start, $end])
-                ->first();
-
-            $total = $booking->total ?? 0;
-
-            $dailyTotals[$dayNumber] += $total;
-
-            $row['days'][] = [
-                'day_name' => $dayName,
-                'status' => $booking->status ?? "disponible",
-                'booking_details' => $booking ? [
-                    'id' => $booking->id,
-                    'total' => $total,
-                ] : null,
+    // Construir la estructura deseada.
+    $results = collect($dates)->map(function ($date) use ($fields, $bookings) {
+        $dateStr = $date->format('Y-m-d');
+        $fieldsData = collect($fields)->map(function ($fieldName, $fieldId) use ($bookings, $dateStr) {
+            $booking = $bookings[$dateStr]->firstWhere('field_id', $fieldId) ?? null;
+            return [
+                'field' => $fieldName,
+                'total' => $booking->total ?? 0,
             ];
-        }
+        });
 
-        return $row;
+        $totalMonth = $fieldsData->sum('total');
+
+        return [
+            'date' => $dateStr,
+            'fields' => $fieldsData->values()->toArray(),
+            'totalMonth' => $totalMonth,
+        ];
     });
 
-    $totalsByDay = [];
-    foreach ($daysOfWeek as $dayNumber => $dayName) {
-        $totalsByDay[] = [
-            'day_name' => $dayName,
-            'total' => $dailyTotals[$dayNumber],
-        ];
-    }
+    // Totales por campo.
+    $fieldTotals = collect($fields)->mapWithKeys(function ($fieldName, $fieldId) use ($bookings) {
+        $total = $bookings->flatten(1)->where('field_id', $fieldId)->sum('total');
+        return [$fieldName => $total];
+    });
 
-    return $this->sendResponse(['schedule' => $results, 'totals_by_day' => $totalsByDay], "Tabla de reservas");
+    return $this->sendResponse([
+        'bookings' => $results->toArray(),
+        'fieldTotals' => $fieldTotals,
+    ], "Tabla de reservas");
 }
 
 }
-

@@ -28,7 +28,8 @@ class RegisterRequest extends FormRequest
             'dni' => ['required', 'unique:users', 'digits:8'],
             'phone' => ['required', 'unique:users', 'digits:9'],
             'rol_id' => ['nullable', 'exists:rols,id'],
-            'address' => ['nullable']
+            'address' => ['nullable'],
+            'birthday' => ['nullable', 'date'],
         ];
     }
 }

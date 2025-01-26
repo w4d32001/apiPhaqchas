@@ -7,6 +7,7 @@ use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Field\FieldController;
 use App\Http\Controllers\Sport\SportController;
 use App\Http\Controllers\User\AdmiController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +54,7 @@ Route::post('annoucement/updateImage/{id}', [AnnouncementController::class, 'upd
 
 Route::apiResource('admi', AdmiController::class);
 Route::post('admi/updateAdmi/{admi}/{id}', [AdmiController::class, 'updateAdmi']);
+Route::apiResource('user', UserController::class);
 
 Route::apiResource('sport', SportController::class);
 Route::post('sport/updatePrice/{id}', [SportController::class, 'updatePrice']);
