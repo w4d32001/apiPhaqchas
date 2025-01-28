@@ -21,36 +21,39 @@ class CustomerController extends Controller
             return $this->sendError($e->getMessage());
         }
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
     }
+
+    public function topCustomers(){
+        try {
+            $customers = User::withCount('bookings')  
+                ->where('rol_id', 3) 
+                ->orderBy('bookings_count', 'desc') 
+                ->limit(5)  
+                ->get();
+    
+            return $this->sendResponse($customers, "Top 5 clientes");
+    
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+    }
+
 }

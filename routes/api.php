@@ -47,6 +47,7 @@ Route::get('bookingsForLandingPage/{courtId}/{start}/{end}', [BookingController:
 Route::get('bookingsForAdmiMonth/{month}/{year}', [BookingController::class, 'bookingsForAdmiMonth']);
 
 Route::apiResource('customer', CustomerController::class);
+Route::get('topCustomers', [CustomerController::class, 'topCustomers']);
 
 Route::apiResource('annoucement', AnnouncementController::class);
 Route::get('annoucement/updateStatus/{id}', [AnnouncementController::class, 'updateStatus']);
@@ -58,6 +59,7 @@ Route::apiResource('user', UserController::class);
 
 Route::apiResource('sport', SportController::class);
 Route::post('sport/updatePrice/{id}', [SportController::class, 'updatePrice']);
+Route::post('sport/updateImage/{id}', [SportController::class, 'updateImage']);
 
 
 Route::post('completePayment/{id}', [BookingController::class, 'completePayment']);

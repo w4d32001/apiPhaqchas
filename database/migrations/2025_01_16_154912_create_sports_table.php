@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->decimal('price_morning');
             $table->decimal('price_evening');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

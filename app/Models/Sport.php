@@ -15,6 +15,7 @@ class Sport extends Model
         'description',
         'price_morning',
         'price_evening',
+        'image'
     ];
 
     public function bookings(): HasMany
