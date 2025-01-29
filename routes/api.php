@@ -49,9 +49,9 @@ Route::get('bookingsForAdmiMonth/{month}/{year}', [BookingController::class, 'bo
 Route::apiResource('customer', CustomerController::class);
 Route::get('topCustomers', [CustomerController::class, 'topCustomers']);
 
-Route::apiResource('annoucement', AnnouncementController::class);
-Route::get('annoucement/updateStatus/{id}', [AnnouncementController::class, 'updateStatus']);
-Route::post('annoucement/updateImage/{id}', [AnnouncementController::class, 'updateImage']);
+Route::apiResource('announcement', AnnouncementController::class);
+Route::get('announcement/updateStatus/{id}', [AnnouncementController::class, 'updateStatus']);
+Route::post('announcement/updateImage/{id}', [AnnouncementController::class, 'updateImage']);
 
 Route::apiResource('admi', AdmiController::class);
 Route::post('admi/updateAdmi/{admi}/{id}', [AdmiController::class, 'updateAdmi']);
