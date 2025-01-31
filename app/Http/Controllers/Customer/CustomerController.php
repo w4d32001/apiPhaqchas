@@ -43,7 +43,8 @@ class CustomerController extends Controller
 
     public function topCustomers(){
         try {
-            $customers = User::withCount('bookings')  
+            $customers = User::select('id', 'name', 'dni')
+                ->withCount('bookings')
                 ->where('rol_id', 3) 
                 ->orderBy('bookings_count', 'desc') 
                 ->limit(5)  

@@ -38,7 +38,7 @@ class BookingController extends Controller
             $startTime = Carbon::createFromFormat('H:i', $validation['start_time']);
     
             $existingBooking = Booking::where('field_id', $validation['field_id']) 
-                ->whereDate('start_time', Carbon::now()->format('Y-m-d'))
+                ->whereDate('start_time', $validation['booking_date'])
                 ->whereTime('start_time', $startTime->toTimeString())
                 ->exists();
     
