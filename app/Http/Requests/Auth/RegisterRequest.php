@@ -32,4 +32,23 @@ class RegisterRequest extends FormRequest
             'birth_date' => ['nullable', 'date', 'before:today'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'El nombre es obligatorio.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'surname.required' => 'El apellido es obligatorio.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.unique' => 'El DNI ya está registrado.',
+            'dni.digits' => 'El DNI debe tener exactamente 8 dígitos.',
+            'phone.required' => 'El teléfono es obligatorio.',
+            'phone.unique' => 'El teléfono ya está registrado.',
+            'phone.digits' => 'El teléfono debe tener exactamente 9 dígitos.',
+            'rol_id.exists' => 'El rol seleccionado no es válido.',
+            'birth_date.date' => 'La fecha de nacimiento debe ser una fecha válida.',
+            'birth_date.before' => 'La fecha de nacimiento debe ser anterior a hoy.',
+        ];
+    }
 }

@@ -125,67 +125,70 @@ class BookingController extends Controller
     }
 
     public function completePayment($id, Request $request)
-    {
-        try {
-            $booking = Booking::findOrFail($id);
+{
+    try {
+        $booking = Booking::findOrFail($id);
 
-            $sport = DB::table('sports')
-                ->select('price_morning', 'price_evening')
-                ->where('id', $booking->sport_id)
-                ->first();
+        $sport = DB::table('sports')
+            ->select('price_morning', 'price_evening')
+            ->where('id', $booking->sport_id)
+            ->first();
 
-            if (!$sport) {
-                return $this->sendError('No se encontró información del deporte asociado.');
-            }
-
-            $price = $request->input('price');
-            $yape = $request->input('yape');
-
-            if (empty($price) && empty($yape)) {
-                return $this->sendError('Debe proporcionar al menos un tipo de pago (price o yape).');
-            }
-            $currentHour = now()->hour;
-            if (!empty($price)) {
-
-
-                if ($currentHour >= 8 && $currentHour < 15) {
-                    $paymentPrice = $sport->price_morning;
-                } else {
-                    $paymentPrice = $sport->price_evening;
-                }
-                $booking->update([
-                    'price' => $booking->price + $paymentPrice,
-                ]);
-                $paymentType = 'contado';
-                
-            } else {
-                if ($currentHour >= 8 && $currentHour < 15) {
-                    $paymentPrice = $sport->price_morning;
-                } else {
-                    $paymentPrice = $sport->price_evening;
-                }
-                $booking->update([
-                    'yape' => $booking->yape + $paymentPrice,
-                ]);
-                $paymentType = 'Yape';
-            }
-
-            $total = $booking->total + $paymentPrice;
-
-            $booking->update([
-                'status' => 'completado',
-                'total' => $total,
-            ]);
-
-            return response()->json([
-                'message' => 'Pago completado exitosamente.',
-                'total' => $total,
-                'paymentType' => $paymentType,
-            ]);
-        } catch (\Exception $e) {
-            return $this->sendError('Error: ' . $e->getMessage());
+        if (!$sport) {
+            return $this->sendError('No se encontró información del deporte asociado.');
         }
+
+        $price = $request->input('price');
+        $yape = $request->input('yape');
+
+        if (empty($price) && empty($yape)) {
+            return $this->sendError('Debe proporcionar al menos un tipo de pago (price o yape).');
+        }
+
+        $paymentPrice = ($booking->start_time < '15:00:00') ? $sport->price_morning : $sport->price_evening;
+
+        $remainingAmount = $paymentPrice - ($booking->price + $booking->yape);
+
+        if ($remainingAmount <= 0) {
+            return $this->sendError('El pago ya está completo.');
+        }
+
+        $amountPaid = !empty($price) ? $price : $yape;
+        if ($amountPaid > $remainingAmount) {
+            return $this->sendError('El monto ingresado excede la cantidad restante a pagar.');
+        }
+
+        if (!empty($price)) {
+            $booking->update([
+                'price' => $booking->price + $amountPaid,
+            ]);
+            $paymentType = 'contado';
+        } else {
+            $booking->update([
+                'yape' => $booking->yape + $amountPaid,
+            ]);
+            $paymentType = 'Yape';
+        }
+
+        $newTotal = $booking->price + $booking->yape;
+        $status = ($newTotal >= $paymentPrice) ? 'completado' : 'pendiente';
+
+        $booking->update([
+            'status' => $status,
+            'total' => $newTotal,
+        ]);
+
+        return response()->json([
+            'message' => 'Pago completado exitosamente.',
+            'total' => $newTotal,
+            'paymentType' => $paymentType,
+            'remainingAmount' => $paymentPrice - $newTotal
+        ]);
+    } catch (\Exception $e) {
+        return $this->sendError('Error: ' . $e->getMessage());
     }
+}
+
 
     public function cancelBooking($id)
     {
