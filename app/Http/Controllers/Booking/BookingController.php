@@ -27,50 +27,50 @@ class BookingController extends Controller
     }
 
     public function store(StoreRequest $request)
-{
-    try {
-        $validation = $request->all();
-        $validation['total'] = ($validation['price'] ?? 0) + ($validation['yape'] ?? 0);
+    {
+        try {
+            $validation = $request->all();
+            $validation['total'] = ($validation['price'] ?? 0) + ($validation['yape'] ?? 0);
 
-        $sport = Sport::findOrFail($validation['sport_id']);
-        $field = Field::findOrFail($validation['field_id']); 
+            $sport = Sport::findOrFail($validation['sport_id']);
+            $field = Field::findOrFail($validation['field_id']);
 
-        $startTime = Carbon::createFromFormat('H:i', $validation['start_time']);
+            $startTime = Carbon::createFromFormat('H:i', $validation['start_time']);
 
-        $bookingDate = Carbon::createFromFormat('Y-m-d', $validation['booking_date']);
+            $bookingDate = Carbon::createFromFormat('Y-m-d', $validation['booking_date']);
 
-        $existingBooking = Booking::where('field_id', $validation['field_id']) 
-            ->whereDate('start_time', $bookingDate->toDateString())
-            ->whereTime('start_time', $startTime->toTimeString())
-            ->exists();
+            $existingBooking = Booking::where('field_id', $validation['field_id'])
+                ->whereDate('start_time', $bookingDate->toDateString())
+                ->whereTime('start_time', $startTime->toTimeString())
+                ->exists();
 
-        if ($existingBooking) {
-            return $this->sendError('Ya existe una reserva a esa hora y en ese campo.');
-        }
-
-        if ($startTime->hour < 15) {
-            if ($validation['total'] > $sport->price_morning) {
-                return $this->sendError('El precio total excede al precio de la cancha en la mañana.');
+            if ($existingBooking) {
+                return $this->sendError('Ya existe una reserva a esa hora y en ese campo.');
             }
-        } else {
-            if ($validation['total'] > $sport->price_evening) {
-                return $this->sendError('El precio total excede al precio de la cancha en la tarde.');
+
+            if ($startTime->hour < 15) {
+                if ($validation['total'] > $sport->price_morning) {
+                    return $this->sendError('El precio total excede al precio de la cancha en la mañana.');
+                }
+            } else {
+                if ($validation['total'] > $sport->price_evening) {
+                    return $this->sendError('El precio total excede al precio de la cancha en la tarde.');
+                }
             }
-        }
 
-        if ($validation['total'] > 0) {
-            $validation['status'] = 'reservado';
-        } else {
-            $validation['status'] = 'en espera';
-        }
+            if ($validation['total'] > 0) {
+                $validation['status'] = 'reservado';
+            } else {
+                $validation['status'] = 'en espera';
+            }
 
-        $booking = Booking::create($validation);
-        return $this->sendResponse($booking, "Reserva creada", 'success', 201);
-    } catch (\Exception $e) {
-        return $this->sendError($e->getMessage());
+            $booking = Booking::create($validation);
+            return $this->sendResponse($booking, "Reserva creada", 'success', 201);
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
     }
-}
-    
+
 
     public function show(Booking $booking)
     {
@@ -125,69 +125,79 @@ class BookingController extends Controller
     }
 
     public function completePayment($id, Request $request)
-{
-    try {
-        $booking = Booking::findOrFail($id);
+    {
+        try {
+            $booking = Booking::findOrFail($id);
 
-        $sport = DB::table('sports')
-            ->select('price_morning', 'price_evening')
-            ->where('id', $booking->sport_id)
-            ->first();
+            $sport = DB::table('sports')
+                ->select('price_morning', 'price_evening')
+                ->where('id', $booking->sport_id)
+                ->first();
 
-        if (!$sport) {
-            return $this->sendError('No se encontró información del deporte asociado.');
-        }
+            if (!$sport) {
+                return $this->sendError('No se encontró información del deporte asociado.');
+            }
 
-        $price = $request->input('price');
-        $yape = $request->input('yape');
+            $price = $request->input('price');
+            $yape = $request->input('yape');
 
-        if (empty($price) && empty($yape)) {
-            return $this->sendError('Debe proporcionar al menos un tipo de pago (price o yape).');
-        }
+            if (empty($price) && empty($yape)) {
+                return $this->sendError('Debe proporcionar al menos un tipo de pago (price o yape).');
+            }
 
-        $paymentPrice = ($booking->start_time < '15:00:00') ? $sport->price_morning : $sport->price_evening;
+            $paymentPrice = ($booking->start_time < '15:00:00') ? $sport->price_morning : $sport->price_evening;
 
-        $remainingAmount = $paymentPrice - ($booking->price + $booking->yape);
+            $remainingAmount = $paymentPrice - ($booking->price + $booking->yape);
 
-        if ($remainingAmount <= 0) {
-            return $this->sendError('El pago ya está completo.');
-        }
+            if ($remainingAmount <= 0) {
+                return $this->sendError('El pago ya está completo.');
+            }
 
-        $amountPaid = !empty($price) ? $price : $yape;
-        if ($amountPaid > $remainingAmount) {
-            return $this->sendError('El monto ingresado excede la cantidad restante a pagar.');
-        }
+            $totalPaid = 0;
 
-        if (!empty($price)) {
+            if (!empty($price)) {
+                $totalPaid += $price;
+            }
+
+            if (!empty($yape)) {
+                $totalPaid += $yape;
+            }
+
+            if ($totalPaid > $remainingAmount) {
+                return $this->sendError('El monto ingresado excede la cantidad restante a pagar.');
+            }
+
+            if (!empty($price)) {
+                $booking->update([
+                    'price' => $booking->price + $price,
+                ]);
+            }
+
+            if (!empty($yape)) {
+                $booking->update([
+                    'yape' => $booking->yape + $yape,
+                ]);
+            }
+
+            $newTotal = $booking->price + $booking->yape;
+            $status = ($newTotal >= $paymentPrice) ? 'completado' : 'en espera';
+
             $booking->update([
-                'price' => $booking->price + $amountPaid,
+                'status' => $status,
+                'total' => $newTotal,
             ]);
-            $paymentType = 'contado';
-        } else {
-            $booking->update([
-                'yape' => $booking->yape + $amountPaid,
+
+            return response()->json([
+                'message' => 'Pago completado exitosamente.',
+                'total' => $newTotal,
+                'paymentType' => !empty($price) ? 'contado' : 'Yape',
+                'remainingAmount' => $paymentPrice - $newTotal
             ]);
-            $paymentType = 'Yape';
+        } catch (\Exception $e) {
+            return $this->sendError('Error: ' . $e->getMessage());
         }
-
-        $newTotal = $booking->price + $booking->yape;
-        $status = ($newTotal >= $paymentPrice) ? 'completado' : 'pendiente';
-
-        $booking->update([
-            'status' => $status,
-            'total' => $newTotal,
-        ]);
-
-        return response()->json([
-            'message' => 'Pago completado exitosamente.',
-            'total' => $newTotal,
-            'paymentType' => $paymentType,
-            'remainingAmount' => $paymentPrice - $newTotal
-        ]);
-    } catch (\Exception $e) {
-        return $this->sendError('Error: ' . $e->getMessage());
     }
-}
+
 
 
     public function cancelBooking($id)
