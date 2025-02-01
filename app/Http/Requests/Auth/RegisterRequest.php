@@ -29,7 +29,7 @@ class RegisterRequest extends FormRequest
             'phone' => ['required', 'unique:users', 'digits:9'],
             'rol_id' => ['nullable', 'exists:rols,id'],
             'address' => ['nullable'],
-            'birth_date' => ['nullable', 'date'],
+            'birth_date' => ['nullable', 'date', 'before:today'],
         ];
     }
 }
