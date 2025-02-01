@@ -306,7 +306,7 @@ class BookingController extends Controller
             $results[] = $row;
         }
 
-        return response()->json($results);
+        return $this->sendResponse($results, 'Lista de reservas para la landing page');
     }
 
     public function bookingsForAdmiMonth($month, $year)

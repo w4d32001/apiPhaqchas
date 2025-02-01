@@ -14,7 +14,8 @@ class AnnouncementController extends Controller
     {
         try {
 
-            $annoucements = Announcement::all();
+            $annoucements = Announcement::select('id', 'title', 'image', 'description')
+            ->where('status', 1)->get();
 
             return $this->sendResponse($annoucements, "Lista de anuncios");
 
@@ -35,7 +36,7 @@ class AnnouncementController extends Controller
                 $validated['image'] = Storage::url($image);
             }
             $annoucement = Announcement::create($validated);
-            return $this->sendResponse($annoucement, 'Anuncio greado correctamente', 'success', 201);
+            return $this->sendResponse($annoucement, 'Anuncio creado correctamente', 'success', 201);
         } catch (\Exception $e) {
             return $this->sendError("Error: ".$e->getMessage());
         }
@@ -66,9 +67,10 @@ class AnnouncementController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Announcement $annoucement)
+    public function destroy($id)
     {
         try {
+            $annoucement = Announcement::findOrFail($id);
             $annoucement->delete();
             return $this->sendResponse([], "Anucio eliminado exitosamente");
         } catch (\Exception $e) {
