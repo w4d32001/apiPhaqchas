@@ -16,8 +16,8 @@ class FieldController extends Controller
     public function index()
     {
         try {
-            $fields = Field::select('id', 'status', 'name')->get();
-            return $this->sendResponse(['field' => FieldResource::collection($fields)], 'Lista de campos');
+            $fields = Field::select('id', 'status', 'name', 'image', 'description')->get();
+            return $this->sendResponse($fields, 'Lista de campos');
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage());
         }
