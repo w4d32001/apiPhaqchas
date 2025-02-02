@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Booking;
 
+use App\Exports\BookingsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Booking\StoreRequest;
+use App\Http\Requests\Booking\UpdateRequest;
 use App\Models\Booking;
 use App\Models\Field;
 use App\Models\Sport;
@@ -13,6 +15,7 @@ use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BookingController extends Controller
 {
@@ -81,33 +84,11 @@ class BookingController extends Controller
         }
     }
 
-    public function update(StoreRequest $request, Booking $booking)
+    public function update(UpdateRequest $request, Booking $booking)
     {
         try {
-            $validation = $request->all();
-            $validation['total'] = ($validation['price'] ?? 0) + ($validation['yape'] ?? 0);
-
-            $sport = Sport::findOrFail($validation['sport_id']);
-
-            $startTime = Carbon::createFromFormat('H:i', $validation['start_time']);
-
-            if ($startTime->hour < 15) {
-                if ($validation['total'] > $sport->price_morning) {
-                    return $this->sendError('El precio total excede al precio de la cancha en la mañana.');
-                }
-            } else {
-                if ($validation['total'] > $sport->price_evening) {
-                    return $this->sendError('El precio total excede al precio de la cancha en la tarde.');
-                }
-            }
-
-            if ($validation['total'] > 0) {
-                $validation['status'] = 'reservado';
-            } else {
-                $validation['status'] = 'en espera';
-            }
-
-            $booking->update($validation);
+            $validated = $request->validated();
+            $booking->update($validated);
             return $this->sendResponse($booking, 'Reserva actualizada');
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage());
@@ -205,14 +186,12 @@ class BookingController extends Controller
         try {
             $booking = Booking::findOrFail($id);
 
-            $booking->update([
-                'status' => 'cancelado',
-            ]);
-
             $user = User::findOrFail($booking->user_id);
             $user->update([
                 'faults' => $user->faults + 1,
             ]);
+
+            $booking->delete();
 
             return $this->sendResponse($booking, 'Reserva cancelada correctamente');
         } catch (\Exception $e) {
@@ -340,7 +319,6 @@ class BookingController extends Controller
             ->groupBy('date', 'field_id')
             ->get()
             ->groupBy('date');
-        Log::info($bookings);
 
         $results = collect($dates)->map(function ($date) use ($fields, $bookings) {
             $dateStr = $date->format('Y-m-d');
@@ -370,5 +348,12 @@ class BookingController extends Controller
             'bookings' => $results->toArray(),
             'fieldTotals' => $fieldTotals,
         ], "Tabla de reservas para el mes");
+    }
+
+    public function exportBookingsToExcel($month, $year)
+    {
+        $response = $this->bookingsForAdmiMonth($month, $year);
+        $data = $response->getData(true); 
+        return Excel::download(new BookingsExport($data), "reservas_{$month}_{$year}.xlsx");
     }
 }

@@ -22,12 +22,8 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'exists:user,id'],
-            'field_id' => ['required', 'exists:field,id'],
-            'booking_date' => ['required', 'date'],
-            'start_time' => ['required'],
-            'end_time' => ['required'],
-            'total' => ['required', 'numeric'],
+            'user_id' => ['required', 'exists:users,id'],
+            'field_id' => ['required', 'exists:fields,id'],
         ];
     }
 }
