@@ -61,7 +61,12 @@ class BookingController extends Controller
                 }
             }
 
-            if ($validation['total'] > 0) {
+            $priceRequired = ($startTime->hour < 15) ? $sport->price_morning : $sport->price_evening;
+
+
+            if ($validation['total'] == $priceRequired) {
+                $validation['status'] = 'completado';
+            } elseif ($validation['total'] > 0) {
                 $validation['status'] = 'reservado';
             } else {
                 $validation['status'] = 'en espera';
@@ -353,7 +358,7 @@ class BookingController extends Controller
     public function exportBookingsToExcel($month, $year)
     {
         $response = $this->bookingsForAdmiMonth($month, $year);
-        $data = $response->getData(true); 
+        $data = $response->getData(true);
         return Excel::download(new BookingsExport($data), "reservas_{$month}_{$year}.xlsx");
     }
 }
