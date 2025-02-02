@@ -161,7 +161,7 @@ class BookingController extends Controller
             }
 
             $newTotal = $booking->price + $booking->yape;
-            $status = ($newTotal >= $paymentPrice) ? 'completado' : 'en espera';
+            $status = ($newTotal >= $paymentPrice) ? 'completado' : 'reservado';
 
             $booking->update([
                 'status' => $status,
