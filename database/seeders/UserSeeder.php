@@ -14,15 +14,15 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::create([
-        //     'name' => 'admi',
-        //     'surname' => 'nistrador',
-        //     'password' => Hash::make('12345678'),
-        //     'dni' => '12345678',
-        //     'phone' => '987654321',
-        //     'status' => 1,
-        //     'rol_id' => 1, 
-        // ]);
+        User::create([
+            'name' => 'Aron',
+            'surname' => 'Pizarro',
+            'password' => Hash::make('12345678'),
+            'dni' => '12345678',
+            'phone' => '912365478',
+            'status' => 1,
+            'rol_id' => 1, 
+        ]);
         // User::create([
         //     'name' => 'traba',
         //     'surname' => 'jador',
@@ -41,3 +41,4 @@ class UserSeeder extends Seeder
         ]);
     }
 }
+
