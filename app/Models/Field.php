@@ -13,6 +13,8 @@ class Field extends Model
     protected $fillable = [
         'id',
         'name',
+        'image',
+        'description',
         'status',
     ];
 

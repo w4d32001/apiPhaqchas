@@ -41,6 +41,9 @@ Route::group([
 });
 
 Route::apiResource('field', FieldController::class);
+Route::post('field/updateImage/{id}', [FieldController::class, 'updateImage']);
+Route::get('field/updateStatus/{id}', [FieldController::class, 'updateStatus']);
+
 Route::apiResource('booking', BookingController::class);
 Route::get('bookingsForAdmi/{courtId}/{start}/{end}', [BookingController::class, 'bookingsForAdmi']);
 Route::get('bookingsForLandingPage/{courtId}/{start}/{end}', [BookingController::class, 'bookingsForLandingPage']);

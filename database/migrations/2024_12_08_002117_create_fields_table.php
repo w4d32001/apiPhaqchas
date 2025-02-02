@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('fields', function (Blueprint $table) {
             $table->id();
             $table->string('name', 250);
-            $table->enum('status', ['disponible', 'mantenimiento'])->default('disponible');
+            $table->boolean('status')->default(true);
+            $table->string('description')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

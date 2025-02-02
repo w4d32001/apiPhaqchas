@@ -16,9 +16,6 @@ class FieldResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'field_type_id' => $this->fieldType->name,
-            'price_morning' => $this->price_morning,
-            'price_evening' => $this->price_evening,
             'name' => $this->name,
             'status' => $this->status,
         ];
