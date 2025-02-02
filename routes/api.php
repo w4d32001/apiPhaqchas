@@ -51,6 +51,7 @@ Route::apiResource('customer', CustomerController::class);
 Route::get('topCustomers', [CustomerController::class, 'topCustomers']);
 
 Route::apiResource('announcement', AnnouncementController::class);
+Route::get('activeAnnouncement', [AnnouncementController::class, 'activeAnnouncement']);
 Route::get('announcement/updateStatus/{id}', [AnnouncementController::class, 'updateStatus']);
 Route::post('announcement/updateImage/{id}', [AnnouncementController::class, 'updateImage']);
 

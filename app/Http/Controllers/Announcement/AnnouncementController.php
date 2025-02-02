@@ -14,6 +14,18 @@ class AnnouncementController extends Controller
     {
         try {
 
+            $annoucements = Announcement::select('id', 'title', 'image', 'description', 'status')->get();
+
+            return $this->sendResponse($annoucements, "Lista de anuncios");
+
+        } catch (\Exception $e) {
+            return $this->sendError("Error: ".$e->getMessage());
+        }
+    }
+
+    public function activeAnnouncement(){
+        try {
+
             $annoucements = Announcement::select('id', 'title', 'image', 'description')
             ->where('status', 1)->get();
 
