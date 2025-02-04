@@ -5,6 +5,7 @@ use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Field\FieldController;
+use App\Http\Controllers\Pdf\PdfController;
 use App\Http\Controllers\Sport\SportController;
 use App\Http\Controllers\User\AdmiController;
 use App\Http\Controllers\User\UserController;
@@ -67,3 +68,6 @@ Route::post('sport/updatePrice/{id}', [SportController::class, 'updatePrice']);
 Route::post('sport/updateImage/{id}', [SportController::class, 'updateImage']);
 
 Route::post('completePayment/{id}', [BookingController::class, 'completePayment']);
+
+Route::get('user/pdf', [PdfController::class, 'pdfUsers']);
+Route::get('bookings/pdf/{month}/{year}', [PdfController::class, 'exportBookingsForMonthPf']);

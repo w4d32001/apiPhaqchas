@@ -22,14 +22,7 @@ class UserController extends Controller
        }
     }
 
-    public function pdfUsers()
-    {
-        $users = User::where('rol_id', 3)->get();
-        $pdf = SnappyPdf::loadView('pdf.user', compact('users'));
-
-        return $pdf->download('factura_'.'.pdf');
-        //return view('pdf.user', compact('users'));
-    }
+    
 
     /**
      * Store a newly created resource in storage.

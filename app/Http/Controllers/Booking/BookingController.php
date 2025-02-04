@@ -361,4 +361,7 @@ class BookingController extends Controller
         $data = $response->getData(true);
         return Excel::download(new BookingsExport($data), "reservas_{$month}_{$year}.xlsx");
     }
+
+    
+
 }

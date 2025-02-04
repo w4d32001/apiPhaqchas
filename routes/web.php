@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Booking\BookingController;
+use App\Http\Controllers\Pdf\PdfController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,4 +23,5 @@ Route::get('/', function () {
 
 Route::get('getBookingsByHour', [BookingController::class, 'getBookingsByHour']);
 
-Route::get('users', [UserController::class, 'pdfUsers']);
+Route::get('users', [PdfController::class, 'pdfUsers']);
+Route::get('bookings/pdf/{month}/{year}', [PdfController::class, 'exportBookingsForMonthPf']);

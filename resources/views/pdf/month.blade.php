@@ -103,30 +103,47 @@
         </table>
         <table class="table-report">
             <tr>
-                <td style="text-align: left; color: #374151; ">Reporte usuarios</td>
+                <td style="text-align: left; color: #374151; ">Reporte mensual de canchas</td>
                 <td class="table-report-td" style="color: #374151;">{{ $date }}</td>
             </tr>
         </table>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Dni</th>
-                    <th>Telefono</th>
-                    <th>Faltas</th>
+                    <th>Fecha</th>
+                    <th>Campo 1</th>
+                    <th>Campo 2</th>
+                    <th>Campo 3</th>
+                    <th>Campo 4</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($users as $user)
+                @php
+                $totalMonthSum = 0; 
+            @endphp
+                @foreach ($bookingsData as $item)
                 <tr>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->surname }}</td>
-                    <td>{{ $user->dni }}</td>
-                    <td>{{ $user->phone }}</td>
-                    <td>{{ $user->faults }}</td>
+                    <td>{{ $item['date'] }}</td>
+                    @foreach ( $item['fields'] as $fields )
+                            <td>
+                                S/{{ $fields['total'] }}
+                            </td>
+                    
+                   
+                    @endforeach
+                    <td>
+                        S/{{ $item['totalMonth'] }}
+                    </td>
                 </tr>
+                @php
+                $totalMonthSum += $item['totalMonth']; // Acumular el totalMonth
+            @endphp
                 @endforeach
+                <tr>
+                    <td colspan="{{ count($item['fields']) + 1 }}" class="text-right"><strong>Total:</strong></td>
+                    <td><strong>S/{{ $totalMonthSum }}</strong></td>
+                </tr>
             </tbody>
         </table>
         <table class="footer-table">
