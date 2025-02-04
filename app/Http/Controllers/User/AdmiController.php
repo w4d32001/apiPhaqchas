@@ -47,8 +47,17 @@ class AdmiController extends Controller
         
     }
     
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        try {
+            $user = User::findOrFail($id);
+            if($user->bookings()->count() > 0) {
+                return $this->sendError('No se puede eliminar el campo porque tiene reservas asociadas');
+            }
+            $user->delete();
+            return $this->sendResponse([], "Usuario eliminado con exito");
+        } catch (\Exception $e) {
+            return $this->sendError('Error: '.$e->getMessage());
+        }
     }
 }

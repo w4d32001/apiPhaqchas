@@ -41,20 +41,24 @@ class CustomerController extends Controller
         //
     }
 
-    public function topCustomers(){
-        try {
-            $customers = User::select('id', 'name', 'dni')
-                ->withCount('bookings')
-                ->where('rol_id', 3) 
-                ->orderBy('bookings_count', 'desc') 
-                ->limit(5)  
-                ->get();
+    public function topCustomers($startDate, $endDate)
+{
+    try {
+        $customers = User::select('id', 'name', 'dni')
+            ->withCount(['bookings' => function($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }])
+            ->where('rol_id', 3)  
+            ->orderBy('bookings_count', 'desc')  
+            ->limit(5)  
+            ->get();
     
-            return $this->sendResponse($customers, "Top 5 clientes");
+        return $this->sendResponse($customers, "Top 5 clientes");
     
-        } catch (\Exception $e) {
-            return $this->sendError($e->getMessage());
-        }
+    } catch (\Exception $e) {
+        return $this->sendError($e->getMessage());
     }
+}
+
 
 }
