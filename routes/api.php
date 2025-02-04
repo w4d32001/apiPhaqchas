@@ -69,5 +69,5 @@ Route::post('sport/updateImage/{id}', [SportController::class, 'updateImage']);
 
 Route::post('completePayment/{id}', [BookingController::class, 'completePayment']);
 
-Route::get('user/pdf', [PdfController::class, 'pdfUsers']);
+Route::get('users/pdf', [PdfController::class, 'pdfUsers']);
 Route::get('bookings/pdf/{month}/{year}', [PdfController::class, 'exportBookingsForMonthPf']);
