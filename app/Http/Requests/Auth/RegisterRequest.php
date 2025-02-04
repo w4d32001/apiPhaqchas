@@ -37,9 +37,11 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name.required' => 'El nombre es obligatorio.',
+            'name.regex' => 'El nombre solo puede contener letras y espacios.',
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'surname.required' => 'El apellido es obligatorio.',
+            'surname.regex' => 'El apellido solo puede contener letras y espacios.',
             'dni.required' => 'El DNI es obligatorio.',
             'dni.unique' => 'El DNI ya está registrado.',
             'dni.digits' => 'El DNI debe tener exactamente 8 dígitos.',
