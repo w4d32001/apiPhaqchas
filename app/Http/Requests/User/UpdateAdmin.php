@@ -24,8 +24,8 @@ class UpdateAdmin extends FormRequest
         return [
             'name' => ['required'],
             'surname' => ['required'],
-            'dni' => ['required', 'digits:8', 'unique:users,dni,' . $this->route('user')],
-            'phone' => ['required', 'digits:9', 'unique:users,phone,' . $this->route('user')], 
+            'dni' => ['required', 'digits:8', 'unique:users,dni,' . $this->route('id')],
+            'phone' => ['required', 'digits:9', 'unique:users,phone,' . $this->route('id')], 
         ];
     }
 }
