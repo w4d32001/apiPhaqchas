@@ -6,6 +6,9 @@ use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Field\FieldController;
 use App\Http\Controllers\Pdf\PdfController;
+use App\Http\Controllers\Permission\PermissionController;
+use App\Http\Controllers\Role\RoleController;
+use App\Http\Controllers\Role\RolePermissionController;
 use App\Http\Controllers\Sport\SportController;
 use App\Http\Controllers\User\AdmiController;
 use App\Http\Controllers\User\UserController;
@@ -71,3 +74,17 @@ Route::post('completePayment/{id}', [BookingController::class, 'completePayment'
 
 Route::get('users/pdf', [PdfController::class, 'pdfUsers']);
 Route::get('bookings/pdf/{month}/{year}', [PdfController::class, 'exportBookingsForMonthPf']);
+
+Route::apiResource('role', RoleController::class);
+Route::apiResource('permission', PermissionController::class);
+
+Route::post('/users/{userId}/assign-role', [RolePermissionController::class, 'assignRole']);
+Route::post('/users/{userId}/remove-role', [RolePermissionController::class, 'removeRole']);
+
+Route::post('/users/{userId}/assign-permission', [RolePermissionController::class, 'assignPermission']);
+Route::post('/users/{userId}/remove-permission', [RolePermissionController::class, 'removePermission']);
+
+Route::post('/roles/{roleId}/assign-permissions', [RolePermissionController::class, 'assignPermissionsToRole']);
+
+Route::get('/users/{userId}/roles', [RolePermissionController::class, 'getUserRoles']);
+Route::get('/users/{userId}/permissions', [RolePermissionController::class, 'getUserPermissions']);
