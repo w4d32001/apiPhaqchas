@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Booking;
 
 use App\Exports\BookingsExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Booking\ChangeRequest;
 use App\Http\Requests\Booking\StoreRequest;
 use App\Http\Requests\Booking\UpdateRequest;
 use App\Models\Booking;
@@ -95,6 +96,18 @@ class BookingController extends Controller
     {
         try {
             $validated = $request->validated();
+            $booking->update($validated);
+            return $this->sendResponse($booking, 'Reserva actualizada');
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+    }
+
+    public function change(ChangeRequest $request, int $id)
+    {
+        try {
+            $validated = $request->validated();
+            $booking = Booking::findOrFail($id);
             $booking->update($validated);
             return $this->sendResponse($booking, 'Reserva actualizada');
         } catch (\Exception $e) {

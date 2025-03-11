@@ -27,7 +27,6 @@ class UpdateRequest extends FormRequest
             'surname' => ['required', 'string', 'max:255'],
             'dni' => ['required', 'digits:8', "unique:users,dni,{$this->user}"],
             'phone' => ['required', 'digits:9', "unique:users,phone,{$this->user}"],
-            'rol_id' => ['nullable', 'exists:rols,id'],
             'address' => ['nullable', 'string', 'max:255'],
             'birth_date' => ['nullable', 'date', 'before:today'],
         ];

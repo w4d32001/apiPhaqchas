@@ -9,16 +9,16 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    
+
     /**
      * Crear una nueva instancia del AuthController.
      *
      * @return void
      */
     public function __construct()
-{
-    $this->middleware('auth:api', ['except' => ['register', 'login']]);
-}
+    {
+        $this->middleware('auth:api', ['except' => ['register', 'login']]);
+    }
 
     /**
      * Iniciar sesión y obtener un token JWT.
@@ -57,34 +57,33 @@ class AuthController extends Controller
             if (! $token = auth()->attempt($credentials)) {
                 return $this->sendError('Credenciales incorrectas', 401);
             }
-    
+
             return $this->respondWithToken($token);
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 500);
         }
-
-       
     }
 
     public function register(RegisterRequest $request)
-{
-    try {
-        $validated = $request->validated(); 
-        $user = User::create($validated); 
+    {
+        try {
+            $validated = $request->validated();
+            $user = User::create($validated);
+            $user->assignRole('trabajador');
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Usuario creado exitosamente.',
-            'data' => $user
-        ], 201);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Error al registrar el usuario.',
-            'error' => $e->getMessage()
-        ], 500);
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuario creado exitosamente.',
+                'data' => $user
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al registrar el usuario.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
-}
 
     /**
      * Obtener el usuario autenticado.
@@ -106,20 +105,38 @@ class AuthController extends Controller
      * )
      */
     public function me()
-{
-    try {
-        if (!auth()->check()) {
-            throw new \Exception('Usuario no autenticado.');
+    {
+        try {
+            $user = auth()->user();
+
+            if (!$user) {
+                throw new \Exception('Usuario no autenticado.');
+            }
+
+            return response()->json([
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'surname' => $user->surname,
+                    'email' => $user->email,
+                    'dni' => $user->dni,
+                    'phone' => $user->phone,
+                    'status' => $user->status,
+                    'birth_date' => $user->birth_date,
+                    'created_at' => $user->created_at,
+                ],
+                'roles' => $user->getRoleNames(), 
+                'permissions' => $user->getAllPermissions()->pluck('name'), 
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => 401, // Código de error específico
+            ], 401);
         }
-        return response()->json(auth()->user());
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => true,
-            'message' => $e->getMessage(),
-            'code' => $e->getCode(),
-        ], 401); 
     }
-}
+
 
 
     /**
@@ -185,6 +202,4 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
-
-    
 }

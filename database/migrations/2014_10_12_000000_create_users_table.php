@@ -23,7 +23,6 @@ return new class extends Migration
             $table->tinyInteger('status')->default(1);
             $table->date('birth_date')->nullable();
             $table->integer('faults')->default(0);
-            $table->unsignedBigInteger('rol_id')->default(3);
             $table->rememberToken();
             $table->timestamps();
         });
