@@ -15,7 +15,7 @@ class UserController extends Controller
     public function index()
     {
        try{
-              $users = User::where('rol_id', 3)->get();
+              $users = User::all();
               return $this->sendResponse($users, "Lista de usuarios");
        }catch(\Exception $e){
            return $this->sendError($e->getMessage());

@@ -14,7 +14,7 @@ class CustomerController extends Controller
     public function index()
     {
         try{
-            $customers = User::where('rol_id', '3')->get();
+            $customers = User::all();
             return $this->sendResponse($customers, "Lista de clientes");
 
         }catch(\Exception $e){

@@ -23,6 +23,8 @@ class BookingController extends Controller
     public function index()
     {
         try {
+            $user = auth()->user();
+            
             $bookings = Booking::all();
             return $this->sendResponse($bookings, "Lista de reservas");
         } catch (\Exception $e) {
