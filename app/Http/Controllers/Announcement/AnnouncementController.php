@@ -65,10 +65,11 @@ class AnnouncementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, Announcement $annoucement)
+    public function update(UpdateRequest $request,  $id)
     {
         try {
             $validated = $request->validated();
+            $annoucement = Announcement::findOrFail($id);
             $annoucement->update($validated);
             return $this->sendResponse($annoucement, 'Anuncio actualizado exitosamente', 'success', 201);
         } catch (\Exception $e) {
