@@ -24,7 +24,7 @@ class BookingController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             $bookings = Booking::all();
             return $this->sendResponse($bookings, "Lista de reservas");
         } catch (\Exception $e) {
@@ -33,55 +33,55 @@ class BookingController extends Controller
     }
 
     public function store(StoreRequest $request)
-{
-    try {
-        $validation = $request->all();
-        $validation['total'] = ($validation['price'] ?? 0) + ($validation['yape'] ?? 0);
+    {
+        try {
+            $validation = $request->all();
+            $validation['total'] = ($validation['price'] ?? 0) + ($validation['yape'] ?? 0);
 
-        $sport = Sport::findOrFail($validation['sport_id']);
-        $field = Field::findOrFail($validation['field_id']);
+            $sport = Sport::findOrFail($validation['sport_id']);
+            $field = Field::findOrFail($validation['field_id']);
 
-        $startTime = Carbon::createFromFormat('H:i', $validation['start_time']);
-        $bookingDate = Carbon::createFromFormat('Y-m-d', $validation['booking_date']);
+            $startTime = Carbon::createFromFormat('H:i', $validation['start_time']);
+            $bookingDate = Carbon::createFromFormat('Y-m-d', $validation['booking_date']);
 
-        $fullStartTime = $bookingDate->copy()->setTime($startTime->hour, $startTime->minute);
+            $fullStartTime = $bookingDate->copy()->setTime($startTime->hour, $startTime->minute);
 
-        $existingBooking = Booking::where('field_id', $validation['field_id'])
-            ->where('booking_date', $bookingDate->toDateString()) 
-            ->where('start_time', $startTime->format('H:i:s')) 
-            ->exists();
+            $existingBooking = Booking::where('field_id', $validation['field_id'])
+                ->where('booking_date', $bookingDate->toDateString())
+                ->where('start_time', $startTime->format('H:i:s'))
+                ->exists();
 
-        if ($existingBooking) {
-            return $this->sendError('Ya existe una reserva a esa hora y en ese campo.');
-        }
-
-        if ($startTime->hour < 15) {
-            if ($validation['total'] > $sport->price_morning) {
-                return $this->sendError('El precio total excede al precio de la cancha en la mañana.');
+            if ($existingBooking) {
+                return $this->sendError('Ya existe una reserva a esa hora y en ese campo.');
             }
-        } else {
-            if ($validation['total'] > $sport->price_evening) {
-                return $this->sendError('El precio total excede al precio de la cancha en la tarde.');
+
+            if ($startTime->hour < 15) {
+                if ($validation['total'] > $sport->price_morning) {
+                    return $this->sendError('El precio total excede al precio de la cancha en la mañana.');
+                }
+            } else {
+                if ($validation['total'] > $sport->price_evening) {
+                    return $this->sendError('El precio total excede al precio de la cancha en la tarde.');
+                }
             }
+
+            $priceRequired = ($startTime->hour < 15) ? $sport->price_morning : $sport->price_evening;
+
+            if ($validation['total'] == $priceRequired) {
+                $validation['status'] = 'completado';
+            } elseif ($validation['total'] > 0) {
+                $validation['status'] = 'reservado';
+            } else {
+                $validation['status'] = 'en espera';
+            }
+
+            // Crear la reserva
+            $booking = Booking::create($validation);
+            return $this->sendResponse($booking, "Reserva creada", 'success', 201);
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage());
         }
-
-        $priceRequired = ($startTime->hour < 15) ? $sport->price_morning : $sport->price_evening;
-
-        if ($validation['total'] == $priceRequired) {
-            $validation['status'] = 'completado';
-        } elseif ($validation['total'] > 0) {
-            $validation['status'] = 'reservado';
-        } else {
-            $validation['status'] = 'en espera';
-        }
-
-        // Crear la reserva
-        $booking = Booking::create($validation);
-        return $this->sendResponse($booking, "Reserva creada", 'success', 201);
-    } catch (\Exception $e) {
-        return $this->sendError($e->getMessage());
     }
-}
 
 
 
@@ -262,12 +262,12 @@ class BookingController extends Controller
                     ->whereRaw('DAYOFWEEK(booking_date) = ?', [$dayNumber])
                     ->whereBetween('booking_date', [$start, $end])
                     ->first();
-                    $price = null;
-                    if ($booking) {
-                        $hourCarbon = Carbon::parse($hour);
-                        $price = ($hourCarbon->hour < 15) ? $booking->price_morning : $booking->price_evening;
-                    }
-        
+                $price = null;
+                if ($booking) {
+                    $hourCarbon = Carbon::parse($hour);
+                    $price = ($hourCarbon->hour < 15) ? $booking->price_morning : $booking->price_evening;
+                }
+
                 $row['days'][] = [
                     'day_name' => $dayName,
                     'status' => $booking->status ?? "disponible",
@@ -290,20 +290,27 @@ class BookingController extends Controller
 
     public function bookingsForLandingPage($courtId, $start, $end)
     {
-
         $hours = collect(range(8, 21))->map(function ($hour) {
             return sprintf('%02d:00:00', $hour);
         });
 
-        $daysOfWeek = [
-            1 => 'Domingo',
-            2 => 'Lunes',
-            3 => 'Martes',
-            4 => 'Miercoles',
-            5 => 'Jueves',
-            6 => 'Viernes',
-            7 => 'Sabado',
+        $currentDayOfWeek = Carbon::now()->dayOfWeekIso; 
+
+        $allDays = [
+            1 => 'Lunes',
+            2 => 'Martes',
+            3 => 'Miércoles',
+            4 => 'Jueves',
+            5 => 'Viernes',
+            6 => 'Sábado',
+            7 => 'Domingo',
         ];
+
+        $daysOfWeek = collect($allDays)
+            ->slice($currentDayOfWeek - 1, 7) 
+            ->merge($allDays) 
+            ->unique() 
+            ->toArray();
 
         $results = [];
 
@@ -324,12 +331,12 @@ class BookingController extends Controller
                 $row[$dayName] = $status;
             }
 
-
             $results[] = $row;
         }
 
         return $this->sendResponse($results, 'Lista de reservas para la landing page');
     }
+
 
     public function bookingsForAdmiMonth($month, $year)
     {
@@ -386,7 +393,4 @@ class BookingController extends Controller
         $data = $response->getData(true);
         return Excel::download(new BookingsExport($data), "reservas_{$month}_{$year}.xlsx");
     }
-
-    
-
 }
