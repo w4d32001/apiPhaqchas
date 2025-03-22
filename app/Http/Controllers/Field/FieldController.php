@@ -41,11 +41,11 @@ class FieldController extends Controller
         }
     }
 
-    public function update(UpdateRequest $request, Field $field)
+    public function update(UpdateRequest $request, $id)
     {
         try {
             $validated = $request->validated();
-
+            $field = Field::findOrFail($id);
             $field->update($validated);
 
             return $this->sendResponse(['field' => $field], 'Campo actualizado exitosamente');
@@ -63,9 +63,10 @@ class FieldController extends Controller
         }
     }
 
-    public function destroy(Field $field)
+    public function destroy($id)
     {
         try {
+            $field = Field::findOrFail($id);
             if($field->bookings()->count() > 0) {
                 return $this->sendError('No se puede eliminar el campo porque tiene reservas asociadas');
             }

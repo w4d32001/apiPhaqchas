@@ -51,12 +51,12 @@ class SportController extends Controller
         //
     }
 
-    public function update(UpdateRequest $request, $sport)
+    public function update(UpdateRequest $request, $id)
     {
         try{
             $validated = $request->validated();
 
-            $sport = Sport::findOrFail($sport);
+            $sport = Sport::findOrFail($id);
             $sport->update($validated);
 
             return $this->sendResponse($sport, "Deporte actualizado", 'success', 201);
@@ -66,10 +66,11 @@ class SportController extends Controller
         }
     }
 
-    public function destroy(Sport $sport)
+    public function destroy($id)
     {
         try{
 
+            $sport = Sport::findOrFail($id);
             if($sport->bookings()->exists()){
                 return $this->sendError('Error: Este registro tiene otros registros asociados');
             }

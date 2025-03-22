@@ -288,29 +288,19 @@ class BookingController extends Controller
         return $this->sendResponse($results, "Tabla de reservas");
     }
 
-    public function bookingsForLandingPage($courtId, $start, $end)
+        public function bookingsForLandingPage($courtId, $startDate)
     {
         $hours = collect(range(8, 21))->map(function ($hour) {
             return sprintf('%02d:00:00', $hour);
         });
 
-        $currentDayOfWeek = Carbon::now()->dayOfWeekIso; 
-
-        $allDays = [
-            1 => 'Lunes',
-            2 => 'Martes',
-            3 => 'Miércoles',
-            4 => 'Jueves',
-            5 => 'Viernes',
-            6 => 'Sábado',
-            7 => 'Domingo',
-        ];
-
-        $daysOfWeek = collect($allDays)
-            ->slice($currentDayOfWeek - 1, 7) 
-            ->merge($allDays) 
-            ->unique() 
-            ->toArray();
+        $startDate = Carbon::parse($startDate);
+        
+        $daysOfWeek = [];
+        for ($i = 0; $i < 7; $i++) {
+            $day = $startDate->copy()->addDays($i);
+            $daysOfWeek[$day->dayOfWeekIso] = $day->format('Y-m-d');
+        }
 
         $results = [];
 
@@ -319,16 +309,16 @@ class BookingController extends Controller
                 'hour' => Carbon::parse($hour)->format('h:i A') . ' - ' . Carbon::parse($hour)->addHour()->format('h:i A'),
             ];
 
-            foreach ($daysOfWeek as $dayNumber => $dayName) {
+            foreach ($daysOfWeek as $dayNumber => $date) {
                 $booking = DB::table('bookings')
                     ->where('field_id', $courtId)
-                    ->where('start_time', $hour)
-                    ->whereRaw('DAYOFWEEK(booking_date) = ?', [$dayNumber])
-                    ->whereBetween('booking_date', [$start, $end])
+                    ->whereRaw('TIME(start_time) = ?', [$hour])
+                    ->whereDate('booking_date', $date) 
                     ->first();
+
                 $status = $booking ? $booking->status : 'disponible';
 
-                $row[$dayName] = $status;
+                $row[$date] = $status;
             }
 
             $results[] = $row;
@@ -336,6 +326,7 @@ class BookingController extends Controller
 
         return $this->sendResponse($results, 'Lista de reservas para la landing page');
     }
+
 
 
     public function bookingsForAdmiMonth($month, $year)
