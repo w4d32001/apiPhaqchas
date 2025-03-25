@@ -23,9 +23,9 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'password' => ['required', 'min:8'],
+            'password' => ['min:8'],
             'surname' => ['required'],
-            'dni' => ['unique:users', 'digits:8'],
+            'dni' => ['required','unique:users', 'digits:8'],
             'phone' => ['required', 'unique:users', 'digits:9'],
             'address' => ['nullable'],
             'birth_date' => ['nullable', 'date', 'before:today'],
