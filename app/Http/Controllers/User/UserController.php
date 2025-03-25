@@ -6,9 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Barryvdh\Snappy\Facades\SnappyPdf;
 
 class UserController extends Controller
 {
@@ -31,8 +28,9 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validated();
-            $data = User::create($validated);
-            return $this->sendResponse($data, "Usuario creado con exito", 'success', 201);
+            $user = User::create($validated);
+            $user->assignRole('usuario');
+            return $this->sendResponse($user, "Usuario creado con exito", 'success', 201);
         } catch (\Exception $e) {
             return $this->sendError('Error: '.$e->getMessage());
         }
