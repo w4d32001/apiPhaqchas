@@ -13,11 +13,10 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        try{
+        try {
             $customers = User::role('usuario')->get();
             return $this->sendResponse($customers, "Lista de clientes");
-
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return $this->sendError($e->getMessage());
         }
     }
@@ -42,23 +41,20 @@ class CustomerController extends Controller
     }
 
     public function topCustomers($startDate, $endDate)
-{
-    try {
-        $customers = User::select('id', 'name', 'dni')
-            ->withCount(['bookings' => function($query) use ($startDate, $endDate) {
-                $query->whereBetween('created_at', [$startDate, $endDate]);
-            }])
-            ->where('rol_id', 3)  
-            ->orderBy('bookings_count', 'desc')  
-            ->limit(5)  
-            ->get();
-    
-        return $this->sendResponse($customers, "Top 5 clientes");
-    
-    } catch (\Exception $e) {
-        return $this->sendError($e->getMessage());
+    {
+        try {
+            $customers = User::role('usuario')
+                ->select('id', 'name', 'dni')
+                ->withCount(['bookings' => function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('created_at', [$startDate, $endDate]);
+                }])
+                ->orderBy('bookings_count', 'desc')
+                ->limit(5)
+                ->get();
+
+            return $this->sendResponse($customers, "Top 5 clientes");
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
     }
-}
-
-
 }
