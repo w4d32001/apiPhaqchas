@@ -15,7 +15,7 @@ class AdmiController extends Controller
         try {
             $userId = Auth::id();
 
-            $admins = User::role(['admin', 'trabajador'])
+            $admins = User::role(['Administrador', 'trabajador'])
                 ->where('id', '!=', $userId)
                 ->with('roles:id,name') 
                 ->with('permissions:id,name')
