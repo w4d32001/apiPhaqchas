@@ -86,7 +86,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="{{ $item->image }}" alt="" class="w-auto rounded-r-lg object-cover h-full ">
+                        <img src="https://phaqchas.shop/apiPhaqchas{{ $item->image }}" alt="" class="w-auto rounded-r-lg object-cover h-full ">
                     </div>
                 </div>
             @empty
@@ -100,7 +100,7 @@
             @forelse ($fields as $item)
                 <div class="flex justify-between border rounded-xl shadow-[#B99E2A] shadow-2xl min-h-60">
                     <div>
-                        <img src="{{ $item->image }}" alt="" class="w-auto rounded-l-lg object-cover h-full ">
+                        <img src="https://phaqchas.shop/apiPhaqchas{{ $item->image }}" alt="" class="w-auto rounded-l-lg object-cover h-full ">
                     </div>
                     <div class="p-3 h-full flex flex-col justify-between w-1/2">
                         <div class="flex flex-col gap-y-2">
