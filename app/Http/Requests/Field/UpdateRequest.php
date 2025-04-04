@@ -23,7 +23,9 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'description' => ['required']
+            'description' => ['required'],
+            'price_morning' => ['required', 'numeric'],
+            'price_evening' => ['required', 'numeric'],
         ];
     }
 }

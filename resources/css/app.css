@@ -1,3 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Rubik+Mono+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Inline&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.fondo{
+    background-image: url('/images/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.mayus::first-letter {
+    text-transform: uppercase;
+}
+.truncate-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%; 
+    word-wrap: break-word; 
+    white-space: normal;
+}
