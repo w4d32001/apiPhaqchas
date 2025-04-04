@@ -4,7 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Phaqchas - Centro Deportivo</title>
+    <title>Phaqchas - Centro Deportivo</title>
+    <meta name="description" content="Centro deportivo las Phaqchas - Tu lugar para entrenar.">
+    <meta name="keywords" content="deporte, fitness, Phaqchas, entrenamiento">
+    <meta name="application-name" content="Phaqchas">
+    <meta name="author" content="Tu Nombre">
+    <meta name="robots" content="index, follow">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://phaqchas.shop/">
+    <meta property="og:title" content="Phaqchas - Centro Deportivo">
+    <meta property="og:description" content="Centro deportivo las Phaqchas - Tu lugar para entrenar.">
+    <meta property="og:site_name" content="Phaqchas">
+    <meta property="og:image" content="/logo.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <link rel="icon" href="{{ asset('images/volleyball.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/volleyball.png') }}">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     @vite('resources/css/app.css')
     <style>
         /* Estilos para el menú tipo "sheet" */
