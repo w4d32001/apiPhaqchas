@@ -4,17 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phaqchas - Centro Deportivo</title>
-    <title>Phaqchas - Centro Deportivo</title>
-    <meta name="description" content="Centro deportivo las Phaqchas - Tu lugar para entrenar.">
+    <title>Phaqchas - Campo Deportivo</title>
+    <meta name="description" content="Campo deportivo las Phaqchas - Tu lugar para entrenar.">
     <meta name="keywords" content="deporte, fitness, Phaqchas, entrenamiento">
     <meta name="application-name" content="Phaqchas">
     <meta name="author" content="Tu Nombre">
     <meta name="robots" content="index, follow">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://phaqchas.shop/">
-    <meta property="og:title" content="Phaqchas - Centro Deportivo">
-    <meta property="og:description" content="Centro deportivo las Phaqchas - Tu lugar para entrenar.">
+    <meta property="og:title" content="Phaqchas - Campo Deportivo">
+    <meta property="og:description" content="Campo deportivo las Phaqchas - Tu lugar para entrenar.">
     <meta property="og:site_name" content="Phaqchas">
     <meta property="og:image" content="/logo.png">
     <meta property="og:image:width" content="1200">
@@ -22,26 +21,22 @@
     <link rel="icon" href="{{ asset('images/volleyball.png') }}">
     <link rel="shortcut icon" href="{{ asset('images/volleyball.png') }}">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <!-- Referenciar el archivo CSS -->
+    
     <link rel="stylesheet" href="{{ asset('build/assets/app-CKXJyYSt.css') }}">
 
-    <!-- Referenciar el archivo JS -->
     <script type="module" src="{{ asset('build/assets/app-CqflisoM.js') }}" defer></script>
 
     <style>
-        /* Estilos para el menú tipo "sheet" */
         #mobile-menu {
             position: fixed;
             top: 0;
             left: -100%;
-            /* Inicialmente fuera de la pantalla */
             width: 250px;
             height: 100%;
             background-color: #111;
             transition: left 0.3s ease-in-out;
             z-index: 100;
             padding-top: 80px;
-            /* Espacio para el header */
         }
 
         #mobile-menu ul {
@@ -62,10 +57,8 @@
 
         #mobile-menu.open {
             left: 0;
-            /* Cuando el menú se abre */
         }
 
-        /* Overlay para cuando el menú está abierto */
         .menu-overlay {
             position: fixed;
             top: 0;
@@ -81,7 +74,6 @@
             display: block;
         }
 
-        /* Transición suave para los enlaces */
         a {
             transition: color 0.3s ease, background-color 0.3s ease;
         }
@@ -97,7 +89,7 @@
 <body class="min-h-svh bg-primary-">
 
     <header id="header"
-        class="flex justify-between items-center p-4 h-20 fixed top-0 w-full shadow-xl opacity-90 z-50 transition-all duration-500">
+        class="flex justify-between items-center p-4 h-20 fixed top-0 w-full shadow-xl z-50 transition-all duration-500">
         <a href="{{ route('home') }}" class="flex gap-x-2 items-center justify-center">
             <img src="{{ asset('images/volleyball.png') }}" alt="" class="h-10">
             <h2 class="uppercase font-bold text-lime-600 font-bungee text-2xl">phaqchas</h2>
@@ -152,93 +144,48 @@
         @yield('content')
     </div>
 
-    <footer></footer>
+    <footer class="bg-black/90 text-white pt-10 pb-6 mt-12">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          
+            <div>
+                <img src="{{ asset('/images/logo.jpeg') }}" alt="Phaqchas logo" class="w-68 h-20 mb-4">
+                <h2 class="text-xl font-semibold mb-2">Phaqchas</h2>
+                <p class="text-sm text-gray-300">Campo deportivo Las Phaqchas - Tu lugar ideal para entrenar, competir y disfrutar en comunidad.</p>
+            </div>
+    
+            <div>
+                <h2 class="text-lg font-semibold mb-3">Contacto</h2>
+                <p class="text-sm">📍 Prolongación arica, Apurimác, Perú</p>
+                <p class="text-sm">📞 +51 987 654 321</p>
+                <p class="text-sm">✉️ phaqchas@gmail.com</p>
+                <a href="https://wa.me/51987654321" target="_blank" class="inline-block mt-3 hover:underline">💬 Escríbenos por WhatsApp</a>
+            </div>
+    
+            <div>
+                <h2 class="text-lg font-semibold mb-3">Síguenos</h2>
+                <div class="flex space-x-4">
+                    <a href="https://www.facebook.com/p/Phaqchas-Campo-Deportivo-100071535564464/" target="_blank" aria-label="Facebook" class="text-white hover:text-blue-500">
+                        <svg class="w-6 h-6 fill-current text-white hover:text-blue-500" viewBox="0 0 24 24">
+                            <path d="M22 12A10 10 0 1 0 12 22v-7h-2v-3h2v-2c0-1.7 1-3 3-3h2v3h-2c-.4 0-1 .2-1 1v1h3l-.5 3h-2.5v7a10 10 0 0 0 10-10z"/>
+                        </svg>
+                    </a>
+                    <a href="https://instagram.com/phaqchas" target="_blank" aria-label="Instagram" class="text-white hover:text-pink-400">
+                        <svg class="w-6 h-6 fill-current text-white hover:text-pink-400" viewBox="0 0 24 24">
+                            <path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.3 2.3.5.6.3 1.1.7 1.5 1.2.4.4.9.9 1.2 1.5.2.4.4 1.1.5 2.3.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.9-.5 2.3a4.4 4.4 0 0 1-2.7 2.7c-.4.2-1.1.4-2.3.5-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.3-2.3-.5a4.4 4.4 0 0 1-2.7-2.7c-.2-.4-.4-1.1-.5-2.3C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.9.5-2.3a4.4 4.4 0 0 1 2.7-2.7c.4-.2 1.1-.4 2.3-.5C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1 .1-1.5.2-1.9.4-.5.2-.9.5-1.3.9-.4.4-.7.8-.9 1.3-.2.4-.3.9-.4 1.9C3.5 9.5 3.5 9.9 3.5 12s0 2.5.1 3.7c.1 1 .2 1.5.4 1.9.2.5.5.9.9 1.3.4.4.8.7 1.3.9.4.2.9.3 1.9.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1-.1 1.5-.2 1.9-.4.5-.2.9-.5 1.3-.9.4-.4.7-.8.9-1.3.2-.4.3-.9.4-1.9.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1-.2-1.5-.4-1.9a3 3 0 0 0-2.2-2.2c-.4-.2-.9-.3-1.9-.4C15.5 4 15.1 4 12 4zm0 3a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4zm4.8-1a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/>
+                        </svg>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="border-t border-gray-700 mt-10 pt-4 text-center text-sm text-gray-400">
+            &copy; {{ date('Y') }} Phaqchas. Todos los derechos reservados.
+        </div>
+    </footer>
+    
 
-    @if (Request::is('/'))
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const header = document.getElementById("header");
-                const links = document.querySelectorAll("nav ul li a, #mobile-menu ul li a");
-                const mobileMenu = document.getElementById("mobile-menu");
-                const hamburger = document.getElementById("hamburger");
-                const menuOverlay = document.getElementById("menu-overlay");
-
-                function toggleMobileMenu() {
-                    mobileMenu.classList.toggle("open");
-                    menuOverlay.classList.toggle("active");
-                }
-                menuOverlay.addEventListener("click", toggleMobileMenu);
-
-                links.forEach(link => {
-                    link.addEventListener("click", function(event) {
-                        if (this.getAttribute("href").startsWith('#')) {
-                            event.preventDefault();
-                            const targetId = this.getAttribute("href").substring(1);
-                            const targetSection = document.getElementById(targetId);
-                            if (targetSection) {
-                                window.scrollTo({
-                                    top: targetSection.offsetTop - 60,
-                                    behavior: "smooth"
-                                });
-                            }
-                        }
-
-                        if (mobileMenu.classList.contains("open")) {
-                            toggleMobileMenu();
-                        }
-                    });
-                });
-
-                function updateActiveLink() {
-                    let scrollPosition = window.scrollY + window.innerHeight / 2;
-                    links.forEach(link => {
-                        const href = link.getAttribute("href");
-                        if (href.startsWith('#')) {
-                            const section = document.querySelector(href);
-                            if (section && section.offsetTop <= scrollPosition && (section.offsetTop + section
-                                    .offsetHeight) > scrollPosition) {
-                                link.classList.add("active-link");
-                            } else {
-                                link.classList.remove("active-link");
-                            }
-                        }
-                    });
-                }
-
-                window.addEventListener("scroll", function() {
-                    if (window.scrollY > 50) {
-                        header.classList.add("bg-white", "shadow-2xl", "opacity-none");
-                        header.classList.remove("bg-transparent");
-                        hamburger.classList.add("text-black");
-                        hamburger.classList.remove("text-white");
-
-                        links.forEach(link => {
-                            link.classList.add("text-black");
-                            link.classList.remove("text-white");
-                        });
-                    } else {
-                        header.classList.remove("bg-white", "shadow-2xl", "opacity-none");
-                        header.classList.add("bg-transparent");
-                        hamburger.classList.remove("text-black");
-                        hamburger.classList.add("text-white");
-
-                        links.forEach(link => {
-                            link.classList.remove("text-black");
-                            link.classList.add("text-white");
-                        });
-                    }
-                });
-
-                window.addEventListener("scroll", updateActiveLink);
-                updateActiveLink();
-
-                hamburger.addEventListener("click", function(event) {
-                    event.stopPropagation();
-                    toggleMobileMenu();
-                });
-            });
-        </script>
-    @endif
+    
 </body>
 
 </html>

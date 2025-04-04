@@ -31,43 +31,42 @@ class ViewController extends Controller
     }
 
     public function bookingsForLandingPage($id, $start)
-{
-    $hours = collect(range(8, 21))->map(function ($hour) {
-        return sprintf('%02d:00:00', $hour);
-    });
+    {
+        $hours = collect(range(8, 21))->map(function ($hour) {
+            return sprintf('%02d:00:00', $hour);
+        });
 
-    $start = Carbon::parse($start);
+        $start = Carbon::parse($start);
 
-    // Generar un array de fechas para los próximos 7 días
-    $daysOfWeek = [];
-    for ($i = 0; $i < 7; $i++) {
-        $day = $start->copy()->addDays($i);
-        $daysOfWeek[$day->format('Y-m-d')] = $day->format('l'); // Usa el nombre del día si lo necesitas
-    }
-
-    $results = [];
-
-    foreach ($hours as $hour) {
-        $row = [
-            'hour' => Carbon::parse($hour)->format('h:i A') . ' - ' . Carbon::parse($hour)->addHour()->format('h:i A'),
-        ];
-
-        foreach ($daysOfWeek as $date => $dayName) { // Usamos la fecha directamente
-            $booking = DB::table('bookings')
-                ->where('field_id', $id)
-                ->whereRaw('TIME(start_time) = ?', [$hour])
-                ->whereDate('booking_date', $date)
-                ->first();
-
-            $status = $booking ? $booking->status : 'disponible';
-
-            $row[$date] = $status;
+        // Generar un array de fechas para los próximos 7 días
+        $daysOfWeek = [];
+        for ($i = 0; $i < 7; $i++) {
+            $day = $start->copy()->addDays($i);
+            $daysOfWeek[$day->format('Y-m-d')] = $day->format('l'); // Usa el nombre del día si lo necesitas
         }
 
-        $results[] = $row;
+        $results = [];
+
+        foreach ($hours as $hour) {
+            $row = [
+                'hour' => Carbon::parse($hour)->format('h:i A') . ' - ' . Carbon::parse($hour)->addHour()->format('h:i A'),
+            ];
+
+            foreach ($daysOfWeek as $date => $dayName) { // Usamos la fecha directamente
+                $booking = DB::table('bookings')
+                    ->where('field_id', $id)
+                    ->whereRaw('TIME(start_time) = ?', [$hour])
+                    ->whereDate('booking_date', $date)
+                    ->first();
+
+                $status = $booking ? $booking->status : 'disponible';
+
+                $row[$date] = $status;
+            }
+
+            $results[] = $row;
+        }
+
+        return response()->json(['data' => $results]);
     }
-
-    return response()->json(['data' => $results]);
-}
-
 }

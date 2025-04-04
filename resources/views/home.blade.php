@@ -16,10 +16,10 @@
                     comunidad deportiva y vive la pasión del deporte en Phaqchas.</p>
             </div>
             <div class="w-full flex flex-col md:flex-row items-center justify-center gap-y-4 md:gap-x-4">
-                <button class="bg-lime-600 py-2 px-4 rounded-lg text-white font-bold text-xl">Reservas</button>
-                <button
+                <a href="{{ route('booking') }}" class="bg-lime-600 py-2 px-4 rounded-lg text-white font-bold text-xl">Reservas</a>
+                <a href="#anuncios"
                     class="py-2 px-4 border-2 border-lime-600 rounded-lg font-semibold text-lime-600 hover:bg-lime-600 hover:text-white transition-all duration-300">Visualize
-                    todos nuetros anuncios y comunicados</button>
+                    todos nuetros anuncios y comunicados</a>
             </div>
         </div>
 
@@ -117,21 +117,21 @@
 
     </section>
 
-    <section id="donde-estamos">
+    <section id="donde-estamos" class="flex flex-col gap-y-4 p-4">
         <h1 class="text-[45px] text-center font-bungee uppercase text-[#B99E2A]">
             Donde estamos
         </h1>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-16 p-4">
             <!-- Info -->
-            <div class="bg-lime-600 col-span-1 text-white p-4 rounded-xl h-full flex flex-col justify-around">
-                <h2 class="text-white text-center text-3xl">Ubicación</h2>
-                <p>
+            <div class="bg-white text-black/90 col-span-1 p-4 rounded-xl h-full flex flex-col justify-around">
+                <h2 class=" text-center text-3xl font-bold uppercase">Ubicación</h2>
+                <p class="text-justify text-sm font-semibold">
                     Nos encontramos en la provincia de Abancay, en la intersección
                     de Prolongación Arica con la calle Horacio Zeballos, a 5 minutos del parque Señor de la Caída.
                 </p>
                 <div class="flex items-center justify-center mt-4">
                     <a href="https://www.google.com/maps/@-13.6300254,-72.8793525,19z/data=!5m2!1e4!1e1?entry=ttu"
-                       class="bg-[#B99E2A] rounded-xl font-bold text-white py-3 px-5 hover:bg-[#B99E2A]/90 transition-colors"
+                       class="bg-lime-500 rounded-xl font-bold text-whit/90 py-3 px-5 hover:bg-lime-500/90 transition-colors text-gray-100"
                        target="_blank">
                         Abrir en Google Maps
                     </a>
@@ -194,5 +194,88 @@
         });
 
         updateCarousel();
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const header = document.getElementById("header");
+        const links = document.querySelectorAll("nav ul li a, #mobile-menu ul li a, a");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const hamburger = document.getElementById("hamburger");
+        const menuOverlay = document.getElementById("menu-overlay");
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle("open");
+            menuOverlay.classList.toggle("active");
+        }
+        menuOverlay.addEventListener("click", toggleMobileMenu);
+
+        links.forEach(link => {
+            link.addEventListener("click", function(event) {
+                if (this.getAttribute("href").startsWith('#')) {
+                    event.preventDefault();
+                    const targetId = this.getAttribute("href").substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 60,
+                            behavior: "smooth"
+                        });
+                    }
+                }
+
+                if (mobileMenu.classList.contains("open")) {
+                    toggleMobileMenu();
+                }
+            });
+        });
+
+        function updateActiveLink() {
+            let scrollPosition = window.scrollY + window.innerHeight / 2;
+            links.forEach(link => {
+                const href = link.getAttribute("href");
+                if (href.startsWith('#')) {
+                    const section = document.querySelector(href);
+                    if (section && section.offsetTop <= scrollPosition && (section.offsetTop + section
+                            .offsetHeight) > scrollPosition) {
+                        link.classList.add("active-link");
+                    } else {
+                        link.classList.remove("active-link");
+                    }
+                }
+            });
+        }
+
+        window.addEventListener("scroll", function() {
+            if (window.scrollY > 50) {
+                header.classList.add("bg-white", "shadow-2xl", "opacity-none");
+                header.classList.remove("bg-transparent");
+                hamburger.classList.add("text-black");
+                hamburger.classList.remove("text-white");
+
+                links.forEach(link => {
+                    link.classList.add("text-black");
+                    link.classList.remove("text-white");
+                });
+            } else {
+                header.classList.remove("bg-white", "shadow-2xl", "opacity-none");
+                header.classList.add("bg-transparent");
+                hamburger.classList.remove("text-black");
+                hamburger.classList.add("text-white");
+
+                links.forEach(link => {
+                    link.classList.remove("text-black");
+                    link.classList.add("text-white");
+                });
+            }
+        });
+
+        window.addEventListener("scroll", updateActiveLink);
+        updateActiveLink();
+
+        hamburger.addEventListener("click", function(event) {
+            event.stopPropagation();
+            toggleMobileMenu();
+        });
     });
 </script>

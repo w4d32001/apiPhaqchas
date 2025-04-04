@@ -5,8 +5,7 @@
         <h1 class="text-[45px] text-center font-bungee uppercase text-[#B99E2A]">
             Reservas
         </h1>
-        
-        <!-- Botones para cambiar semana -->
+        <p class="text-center font-semibold">Realize su reserva llamando a los siguientes numeros:</p>
         <div class="text-center mb-8 flex items-center justify-between">
             <button id="prevWeek1" class="bg-red-500 text-white px-4 py-2 rounded mr-2">
                 Semana Anterior
@@ -29,7 +28,7 @@
             </button>
         </div>
 
-        <div id="court2" class="mb-8 min-w-full overflow-x-auto" >
+        <div id="court2" class="mb-8 min-w-full overflow-x-auto">
         </div>
 
         <div class="text-center mb-8 flex items-center justify-between">
@@ -42,7 +41,7 @@
         </div>
 
         <div id="court3" class="mb-8 min-w-full overflow-x-auto">
-           
+
         </div>
 
         <div class="text-center mb-8 flex items-center justify-between">
@@ -55,34 +54,47 @@
         </div>
 
         <div id="court4" class="min-w-full overflow-x-auto">
-           
+
         </div>
     </section>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const courts = [1, 2, 3, 4]; // Los 4 campos
-            let currentStartDate = new Date().toISOString().split('T')[0];
+        document.addEventListener("DOMContentLoaded", function() {
+            const courts = [1, 2, 3, 4];
+            let currentStartDate = getLocalDate();
+            console.log(currentStartDate)
 
-            // Función para obtener las reservas
             function fetchReservations(startDate, courtId) {
                 fetch(`/reservas/${courtId}/${startDate}`)
                     .then(response => response.json())
                     .then(data => {
-                        let html = `<h2 class="text-center text-lg font-semibold text-black/90">Campo ${courtId}</h2><table class="table-auto w-full border-collapse"><thead><tr><th>Hora</th>`;
-                        
-                        const weekDays = Object.keys(data.data[0]).filter(key => key !== 'hour');
+                        let html =
+                            `<h2 class="text-center text-lg font-semibold text-black/90">Campo ${courtId}</h2><table class="table-auto w-full border-collapse"><thead><tr><th>Hora</th>`;
+
+                        const weekDays = getWeekDays(startDate);
+                        console.log(weekDays)
                         weekDays.forEach(day => {
-                            const formattedDay = new Date(day).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' });
-                            html += `<th class="border px-4 py-2 bg-[#B99E2A] text-white mayus ">${formattedDay}</th>`;
+                            const parts = day.split('-');
+                            const localDate = new Date(parts[0], parts[1] - 1, parts[
+                                2]); // Año, Mes (0 indexado), Día
+                            const formattedDay = localDate.toLocaleDateString('es-ES', {
+                                weekday: 'long',
+                                day: 'numeric',
+                                month: 'short'
+                            });
+                            console.log(formattedDay)
+                            html +=
+                                `<th class="border px-4 py-2 bg-[#B99E2A] text-white mayus ">${formattedDay}</th>`;
                         });
 
                         html += `</tr></thead><tbody>`;
 
                         data.data.forEach(item => {
-                            html += `<tr><td class="border px-4 py-2 font-bold bg-blue-600/90 text-white text-center text-sm"  style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.hour}</td>`;
+                            html +=
+                                `<tr><td class="border px-4 py-2 font-bold bg-blue-600/90 text-white text-center text-sm"  style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.hour}</td>`;
                             weekDays.forEach(day => {
-                                html += `<td class="border px-4 py-2 text-center capitalize text-sm ${getColorClass(item[day])}">${item[day]}</td>`;
+                                html +=
+                                    `<td class="border px-4 py-2 text-center capitalize text-sm ${getColorClass(item[day])}">${item[day]}</td>`;
                             });
                             html += `</tr>`;
                         });
@@ -93,6 +105,25 @@
                         document.getElementById(`court${courtId}`).innerHTML = html;
                     })
                     .catch(error => console.error('Error:', error));
+            }
+
+            function getWeekDays(startDate) {
+                const days = [];
+                const start = new Date(startDate);
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date(start);
+                    d.setDate(start.getDate() + i);
+                    days.push(d.toISOString().split('T')[0]); // Sin ajustar la zona horaria otra vez
+                }
+                return days;
+            }
+
+            function getLocalDate() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`; // ✔️ Esto sí es la fecha local real
             }
 
             function changeWeek(courtId, direction) {
@@ -129,13 +160,25 @@
             courts.forEach(courtId => {
                 fetchReservations(currentStartDate, courtId);
 
-                document.getElementById(`prevWeek${courtId}`).addEventListener('click', function () {
+                document.getElementById(`prevWeek${courtId}`).addEventListener('click', function() {
                     changeWeek(courtId, 'previous');
                 });
 
-                document.getElementById(`nextWeek${courtId}`).addEventListener('click', function () {
+                document.getElementById(`nextWeek${courtId}`).addEventListener('click', function() {
                     changeWeek(courtId, 'next');
                 });
+            });
+            const header = document.getElementById("header");
+
+            window.addEventListener("scroll", function() {
+                if (window.scrollY > 50) {
+                    header.classList.add("bg-slate-900", "shadow-2xl");
+                    header.classList.remove("bg-transparent", "opdacity-90");
+
+                } else {
+                    header.classList.remove("bg-slate-900", "shadow-2xl");
+                    header.classList.add("bg-transparent");
+                }
             });
         });
     </script>
