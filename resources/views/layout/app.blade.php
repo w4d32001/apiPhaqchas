@@ -22,7 +22,11 @@
     <link rel="icon" href="{{ asset('images/volleyball.png') }}">
     <link rel="shortcut icon" href="{{ asset('images/volleyball.png') }}">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    @vite('resources/css/app.css')
+    <link rel="stylesheet" href="{{ asset('build/assets/app-CKXJyYSt.css') }}">
+
+    <!-- Si tienes un archivo JS adicional o global -->
+    <script type="module" src="{{ asset('build/assets/app-CqflisoM.js') }}" defer></script>
+
     <style>
         /* Estilos para el menú tipo "sheet" */
         #mobile-menu {
