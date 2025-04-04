@@ -22,10 +22,11 @@
     <link rel="icon" href="{{ asset('images/volleyball.png') }}">
     <link rel="shortcut icon" href="{{ asset('images/volleyball.png') }}">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="{{ mix('build/assets/app-CKXJyYSt.css') }}">
+    <!-- Referenciar el archivo CSS -->
+    <link rel="stylesheet" href="{{ asset('build/assets/app-CKXJyYSt.css') }}">
 
-    <!-- Si tienes un archivo JS adicional o global -->
-    <script type="module" src="{{ mix('build/assets/app-CqflisoM.js') }}" defer></script>
+    <!-- Referenciar el archivo JS -->
+    <script type="module" src="{{ asset('build/assets/app-CqflisoM.js') }}" defer></script>
 
     <style>
         /* Estilos para el menú tipo "sheet" */
@@ -94,44 +95,44 @@
 </head>
 
 <body class="min-h-svh bg-primary-">
-   
-    <header id="header"
-    class="flex justify-between items-center p-4 h-20 fixed top-0 w-full shadow-xl opacity-90 z-50 transition-all duration-500">
-    <a href="{{ route('home') }}" class="flex gap-x-2 items-center justify-center">
-        <img src="{{ asset('images/volleyball.png') }}" alt="" class="h-10">
-        <h2 class="uppercase font-bold text-lime-600 font-bungee text-2xl">phaqchas</h2>
-    </a>
-    @if (Request::is('/'))
-    <nav class="hidden lg:flex gap-4 items-center">
-        <ul class="flex gap-4">
-            <li><a href="#inicio"
-                    class="font-semibold text-white hover:text-lime-600 hover:underline transition-all text-lg">Inicio</a>
-            </li>
-            <li><a href="#anuncios"
-                    class="font-semibold text-white hover:text-lime-600 hover:underline transition-all text-lg">Anuncios</a>
-            </li>
-            <li><a href="#deportes"
-                    class="font-semibold text-white hover:text-lime-600 hover:underline transition-all text-lg">Deportes</a>
-            </li>
-            <li><a href="#donde-estamos"
-                    class="font-semibold text-white hover:text-lime-600 hover:underline transition-all text-lg">Donde
-                    estamos</a></li>
-            <li><a href="{{ route('booking') }}"
-                    class="font-semibold text-white hover:text-lime-600 hover:underline transition-all text-lg">Reservas</a>
-            </li>
-        </ul>
-    </nav>
 
-    <button id="hamburger" class="lg:hidden text-white p-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-            class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-            </path>
-        </svg>
-    </button>
-    @endif
-</header>
-    
+    <header id="header"
+        class="flex justify-between items-center p-4 h-20 fixed top-0 w-full shadow-xl opacity-90 z-50 transition-all duration-500">
+        <a href="{{ route('home') }}" class="flex gap-x-2 items-center justify-center">
+            <img src="{{ asset('images/volleyball.png') }}" alt="" class="h-10">
+            <h2 class="uppercase font-bold text-lime-600 font-bungee text-2xl">phaqchas</h2>
+        </a>
+        @if (Request::is('/'))
+            <nav class="hidden lg:flex gap-4 items-center">
+                <ul class="flex gap-4">
+                    <li><a href="#inicio"
+                            class="font-semibold text-white hover:text-lime-600 hover:underline transition-all text-lg">Inicio</a>
+                    </li>
+                    <li><a href="#anuncios"
+                            class="font-semibold text-white hover:text-lime-600 hover:underline transition-all text-lg">Anuncios</a>
+                    </li>
+                    <li><a href="#deportes"
+                            class="font-semibold text-white hover:text-lime-600 hover:underline transition-all text-lg">Deportes</a>
+                    </li>
+                    <li><a href="#donde-estamos"
+                            class="font-semibold text-white hover:text-lime-600 hover:underline transition-all text-lg">Donde
+                            estamos</a></li>
+                    <li><a href="{{ route('booking') }}"
+                            class="font-semibold text-white hover:text-lime-600 hover:underline transition-all text-lg">Reservas</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <button id="hamburger" class="lg:hidden text-white p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+        @endif
+    </header>
+
     <div id="mobile-menu" class="">
         <a href="{{ route('home') }}" class="flex gap-x-2 items-center justify-center">
             <img src="{{ asset('images/volleyball.png') }}" alt="" class="h-10">
@@ -181,7 +182,7 @@
                                 });
                             }
                         }
-                        
+
                         if (mobileMenu.classList.contains("open")) {
                             toggleMobileMenu();
                         }
@@ -189,7 +190,7 @@
                 });
 
                 function updateActiveLink() {
-                    let scrollPosition = window.scrollY + window.innerHeight / 2; 
+                    let scrollPosition = window.scrollY + window.innerHeight / 2;
                     links.forEach(link => {
                         const href = link.getAttribute("href");
                         if (href.startsWith('#')) {
@@ -198,7 +199,7 @@
                                     .offsetHeight) > scrollPosition) {
                                 link.classList.add("active-link");
                             } else {
-                                link.classList.remove("active-link"); 
+                                link.classList.remove("active-link");
                             }
                         }
                     });
@@ -229,10 +230,10 @@
                 });
 
                 window.addEventListener("scroll", updateActiveLink);
-                updateActiveLink(); 
+                updateActiveLink();
 
                 hamburger.addEventListener("click", function(event) {
-                    event.stopPropagation(); 
+                    event.stopPropagation();
                     toggleMobileMenu();
                 });
             });
