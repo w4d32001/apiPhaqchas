@@ -54,6 +54,9 @@ Route::get('bookingsForLandingPage/{courtId}/{start}', [BookingController::class
 Route::get('bookingsForAdmiMonth/{month}/{year}', [BookingController::class, 'bookingsForAdmiMonth']);
 Route::get('/bookings/excel/{month}/{year}', [BookingController::class, 'exportBookingsToExcel']);
 Route::put('booking/change/{id}', [BookingController::class, 'change']);
+Route::get('booking/promotions/{id}', [BookingController::class, 'promotions']);
+Route::get('booking/deleteBooking/{id}', [BookingController::class, 'deleteBooking']);
+
 
 Route::apiResource('customer', CustomerController::class);
 Route::get('topCustomers/{startDate}/{endDate}', [CustomerController::class, 'topCustomers']);

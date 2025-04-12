@@ -105,6 +105,30 @@ class BookingController extends Controller
         }
     }
 
+    public function promotions(int $id){
+        try{
+
+            $booking = Booking::findOrFail($id);
+            $booking->update(['status' => 'promoción']);
+            return $this->sendResponse($booking, 'Promoción realizada');
+
+        }catch(\Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+    }
+
+    public function deleteBooking(int $id){
+        try{
+
+            $booking = Booking::findOrFail($id);
+            $booking->update(['status' => 'eliminada']);
+            return $this->sendResponse($booking, 'Reserva eliminada');
+
+        }catch(\Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+    }
+
     public function change(ChangeRequest $request, int $id)
     {
         try {

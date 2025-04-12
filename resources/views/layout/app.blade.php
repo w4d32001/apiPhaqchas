@@ -21,11 +21,8 @@
     <link rel="icon" href="{{ asset('images/volleyball.png') }}">
     <link rel="shortcut icon" href="{{ asset('images/volleyball.png') }}">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    
-    <link rel="stylesheet" href="{{ asset('build/assets/app-CKXJyYSt.css') }}">
 
-    <script type="module" src="{{ asset('build/assets/app-CqflisoM.js') }}" defer></script>
-
+    @vite('resources/css/app.css')
     <style>
         #mobile-menu {
             position: fixed;
@@ -158,7 +155,7 @@
                 <p class="text-sm">📍 Prolongación arica, Apurimác, Perú</p>
                 <p class="text-sm">📞 +51 987 654 321</p>
                 <p class="text-sm">✉️ phaqchas@gmail.com</p>
-                <a href="https://wa.me/51987654321" target="_blank" class="inline-block mt-3 hover:underline">💬 Escríbenos por WhatsApp</a>
+                <a href="https://wa.me/51987654321" target="_blank" class="inline-block mt-3 hover:underline text-gray-300">💬 Escríbenos por WhatsApp</a>
             </div>
     
             <div>

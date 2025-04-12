@@ -40,7 +40,7 @@
                         <h2 class="text-[30px] text-center font-bungee uppercase text-[#B99E2A]">
                             {{ $item->title }}
                         </h2>
-                        <img src="https://api.dev.phaqchas.shop/apiPhaqchas/public{{ $item->image }}" alt="" class="w-auto h-[450px] rounded-lg mt-4 object-cover">
+                        <img src="{{ asset($item->image) }}" alt="" class="w-auto h-[450px] rounded-lg mt-4 object-cover">
                         <p
                             class="font-medium text-lg text-white mayus text-justify break-words overflow-y-auto max-h-60 p-4 bg-black/50 rounded-md w-full mt-4 max-w-[450px]">
                             {{ $item->description }}
@@ -86,7 +86,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://api.dev.phaqchas.shop/apiPhaqchas/public{{ $item->image }}" alt="" class="w-auto rounded-r-lg object-cover h-full ">
+                        <img src="{{ asset($item->image) }}" alt="" class="w-auto rounded-r-lg object-cover h-full ">
                     </div>
                 </div>
             @empty
@@ -100,7 +100,7 @@
             @forelse ($fields as $item)
                 <div class="flex justify-between border rounded-xl shadow-[#B99E2A] shadow-2xl min-h-60">
                     <div>
-                        <img src="https://api.dev.phaqchas.shop/apiPhaqchas/public{{ $item->image }}" alt="" class="w-auto rounded-l-lg object-cover h-full ">
+                        <img src="{{ asset($item->image) }}" alt="" class="w-auto rounded-l-lg object-cover h-full ">
                     </div>
                     <div class="p-3 h-full flex flex-col justify-between w-1/2">
                         <div class="flex flex-col gap-y-2">
