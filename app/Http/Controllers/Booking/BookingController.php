@@ -301,7 +301,7 @@ class BookingController extends Controller
                         'user_name' => $booking->user_name,
                         'yape' => $booking->yape ?? 0,
                         'price' =>  $price,
-                        'total' => $price,
+                        'total' => $price + $booking->yape,
                     ] : null,
                 ];
             }
