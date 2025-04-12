@@ -300,8 +300,9 @@ class BookingController extends Controller
                         'id_user' => $booking->user_id,
                         'user_name' => $booking->user_name,
                         'yape' => $booking->yape ?? 0,
-                        'price' =>  $price,
-                        'total' => $price + $booking->yape,
+                        'price' =>  $booking->price,
+                        'total' => $booking->price + $booking->yape,
+                        'price_sport' => $price
                     ] : null,
                 ];
             }
