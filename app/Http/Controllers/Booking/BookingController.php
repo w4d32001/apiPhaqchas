@@ -357,53 +357,64 @@ class BookingController extends Controller
 
 
     public function bookingsForAdmiMonth($month, $year)
-    {
-        $start = Carbon::createFromDate($year, $month, 1)->startOfMonth();
-        $end = Carbon::createFromDate($year, $month, 1)->endOfMonth();
-        $dates = CarbonPeriod::create($start, $end)->toArray();
+{
+    $start = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+    $end = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+    $dates = CarbonPeriod::create($start, $end)->toArray();
 
-        $fields = DB::table('fields')->pluck('name', 'id');
+    $fields = DB::table('fields')->pluck('name', 'id');
 
-        $bookings = DB::table('bookings')
-            ->select(
-                DB::raw('DATE(booking_date) as date'),
-                'field_id',
-                DB::raw('SUM(total) as total')
-            )
-            ->whereBetween('booking_date', [$start, $end])
-            ->groupBy('date', 'field_id')
-            ->get()
-            ->groupBy('date');
+    $bookings = DB::table('bookings')
+        ->select(
+            DB::raw('DATE(booking_date) as date'),
+            'field_id',
+            DB::raw('SUM(price + yape) as total'),
+            DB::raw('SUM(price) as price'),
+            DB::raw('SUM(yape) as yape')
+        )
+        ->whereBetween('booking_date', [$start, $end])
+        ->groupBy('date', 'field_id')
+        ->get()
+        ->groupBy('date');
 
-        $results = collect($dates)->map(function ($date) use ($fields, $bookings) {
-            $dateStr = $date->format('Y-m-d');
-            $fieldsData = collect($fields)->map(function ($fieldName, $fieldId) use ($bookings, $dateStr) {
-                $booking = collect($bookings[$dateStr] ?? [])->firstWhere('field_id', $fieldId);
-                return [
-                    'field' => $fieldName,
-                    'total' => $booking->total ?? 0,
-                ];
-            });
-
-            $totalMonth = $fieldsData->sum('total');
-
+    $results = collect($dates)->map(function ($date) use ($fields, $bookings) {
+        $dateStr = $date->format('Y-m-d');
+        $fieldsData = collect($fields)->map(function ($fieldName, $fieldId) use ($bookings, $dateStr) {
+            $booking = collect($bookings[$dateStr] ?? [])->firstWhere('field_id', $fieldId);
             return [
-                'date' => $dateStr,
-                'fields' => $fieldsData->values()->toArray(),
-                'totalMonth' => $totalMonth,
+                'field' => $fieldName,
+                'total' => ($booking->price ?? 0) + ($booking->yape ?? 0),
+                'price' => $booking->price ?? 0,
+                'yape' => $booking->yape ?? 0,
             ];
         });
 
-        $fieldTotals = collect($fields)->mapWithKeys(function ($fieldName, $fieldId) use ($bookings) {
-            $total = $bookings->flatten(1)->where('field_id', $fieldId)->sum('total');
-            return [$fieldName => $total];
-        });
+        $totalMonth = $fieldsData->sum('total');
 
-        return $this->sendResponse([
-            'bookings' => $results->toArray(),
-            'fieldTotals' => $fieldTotals,
-        ], "Tabla de reservas para el mes");
-    }
+        return [
+            'date' => $dateStr,
+            'fields' => $fieldsData->values()->toArray(),
+            'totalMonth' => $totalMonth,
+        ];
+    });
+
+    $fieldTotals = collect($fields)->mapWithKeys(function ($fieldName, $fieldId) use ($bookings) {
+        $fieldBookings = $bookings->flatten(1)->where('field_id', $fieldId);
+        return [
+            $fieldName => [
+                'total' => $fieldBookings->sum('total'),
+                'total_price' => $fieldBookings->sum('total_price'),
+                'total_quantity' => $fieldBookings->sum('total_quantity'),
+            ]
+        ];
+    });
+
+    return $this->sendResponse([
+        'bookings' => $results->toArray(),
+        'fieldTotals' => $fieldTotals,
+    ], "Tabla de reservas para el mes");
+}
+
 
     public function exportBookingsToExcel($month, $year)
     {

@@ -29,10 +29,11 @@ class PdfController extends Controller
 
         $bookings = $data['data'];
 
-        //return response()->json($bookingsData['bookings']);
+        //return response()->json($bookings['bookings']);
         $bookingsData = $bookings['bookings'];
         //return view('pdf.month', compact(['bookingsData', 'date']));
-        $pdf = Pdf::loadView('pdf.month', compact(['bookingsData', 'date']));
+        $pdf = Pdf::loadView('pdf.month', compact(['bookingsData', 'date']))
+        ->setPaper('a4', 'landscape');
         return $pdf->download('reporte_mes_' . $date . '.pdf');
     }
 }
