@@ -26,7 +26,7 @@ class StoreRequest extends FormRequest
             'description' => ['nullable'],
             'price_morning' => ['required', 'numeric'],
             'price_evening' => ['required', 'numeric'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif',  'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp',  'max:2048'],
         ];
     }
 }

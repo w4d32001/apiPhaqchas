@@ -1,17 +1,18 @@
 @extends('layout.app')
 
 @section('content')
-    <section id="reservas" class="pt-20 px-6">
-        <h1 class="text-[45px] text-center font-bungee uppercase text-[#B99E2A]">
-            Reservas
-        </h1>
-        <p class="text-center font-semibold">Realize su reserva llamando a los siguientes numeros:</p>
+    <section id="reservas" class="pt-20 px-6 bg-white">
+        <div class="py-4"></div>
+        <x-section-header
+        title="Reservas"
+        description="Puede realizar su reserva llamando a los siguientes numeros:" />
+
         <div class="text-center mb-8 flex items-center justify-between">
-            <button id="prevWeek1" class="bg-red-500 text-white px-4 py-2 rounded mr-2">
-                Semana Anterior
+            <button id="prevWeek1" class="bg-cinnabar-600 text-white px-4 py-2 rounded font-semibold hover:px-6 hover:py-4 transition-all duration-300">
+                <i class="fa fa-arrow-left"></i> 
             </button>
-            <button id="nextWeek1" class="bg-red-500 text-white px-4 py-2 rounded">
-                Semana Siguiente
+            <button id="nextWeek1" class="bg-cinnabar-600 text-white px-4 py-2 rounded font-semibold hover:px-6 hover:py-4 transition-all duration-300">
+                <i class="fa fa-arrow-right"></i>
             </button>
         </div>
 
@@ -20,11 +21,11 @@
         </div>
 
         <div class="text-center mb-8 flex items-center justify-between">
-            <button id="prevWeek2" class="bg-red-500 text-white px-4 py-2 rounded mr-2">
-                Semana Anterior
+            <button id="prevWeek2" class="bg-cinnabar-600 text-white px-4 py-2 rounded font-semibold hover:px-6 hover:py-4 transition-all duration-300">
+                <i class="fa fa-arrow-left"></i> 
             </button>
-            <button id="nextWeek2" class="bg-red-500 text-white px-4 py-2 rounded">
-                Semana Siguiente
+            <button id="nextWeek2" class="bg-cinnabar-600 text-white px-4 py-2 rounded font-semibold hover:px-6 hover:py-4 transition-all duration-300">
+                <i class="fa fa-arrow-right"></i>
             </button>
         </div>
 
@@ -32,11 +33,11 @@
         </div>
 
         <div class="text-center mb-8 flex items-center justify-between">
-            <button id="prevWeek3" class="bg-red-500 text-white px-4 py-2 rounded mr-2">
-                Semana Anterior
+            <button id="prevWeek3" class="bg-cinnabar-600 text-white px-4 py-2 rounded font-semibold hover:px-6 hover:py-4 transition-all duration-300">
+                <i class="fa fa-arrow-left"></i> 
             </button>
-            <button id="nextWeek3" class="bg-red-500 text-white px-4 py-2 rounded">
-                Semana Siguiente
+            <button id="nextWeek3" class="bg-cinnabar-600 text-white px-4 py-2 rounded font-semibold hover:px-6 hover:py-4 transition-all duration-300">
+                <i class="fa fa-arrow-right"></i>
             </button>
         </div>
 
@@ -45,11 +46,11 @@
         </div>
 
         <div class="text-center mb-8 flex items-center justify-between">
-            <button id="prevWeek4" class="bg-red-500 text-white px-4 py-2 rounded mr-2">
-                Semana Anterior
+            <button id="prevWeek4" class="bg-cinnabar-600 text-white px-4 py-2 rounded font-semibold hover:px-6 hover:py-4 transition-all duration-300">
+                <i class="fa fa-arrow-left"></i> 
             </button>
-            <button id="nextWeek4" class="bg-red-500 text-white px-4 py-2 rounded">
-                Semana Siguiente
+            <button id="nextWeek4" class="bg-cinnabar-600 text-white px-4 py-2 rounded font-semibold hover:px-6 hover:py-4 transition-all duration-300">
+                <i class="fa fa-arrow-right"></i>
             </button>
         </div>
 
@@ -69,14 +70,14 @@
                     .then(response => response.json())
                     .then(data => {
                         let html =
-                            `<h2 class="text-center text-lg font-semibold text-black/90">Campo ${courtId}</h2><table class="table-auto w-full border-collapse"><thead><tr><th>Hora</th>`;
+                            `<h2 class="text-center text-xl uppercase font-bold text-cinnabar-600 mb-4">Campo ${courtId}</h2><table class="table-auto w-full border-collapse shadow-2xl shadow-black"><thead><tr><th class="border bg-cinnabar-600 text-white">Hora</th>`;
 
                         const weekDays = getWeekDays(startDate);
                         console.log(weekDays)
                         weekDays.forEach(day => {
                             const parts = day.split('-');
                             const localDate = new Date(parts[0], parts[1] - 1, parts[
-                                2]); // Año, Mes (0 indexado), Día
+                                2]); 
                             const formattedDay = localDate.toLocaleDateString('es-ES', {
                                 weekday: 'long',
                                 day: 'numeric',
@@ -84,17 +85,17 @@
                             });
                             console.log(formattedDay)
                             html +=
-                                `<th class="border px-4 py-2 bg-[#B99E2A] text-white mayus ">${formattedDay}</th>`;
+                                `<th class="border px-4 py-2 bg-cinnabar-600 text-white mayus ">${formattedDay}</th>`;
                         });
 
                         html += `</tr></thead><tbody>`;
 
                         data.data.forEach(item => {
                             html +=
-                                `<tr><td class="border px-4 py-2 font-bold bg-blue-600/90 text-white text-center text-sm"  style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.hour}</td>`;
+                                `<tr><td class="border-y px-4 py-2 font-bold bg-cinnabar-600 text-white text-center text-sm"  style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.hour}</td>`;
                             weekDays.forEach(day => {
                                 html +=
-                                    `<td class="border px-4 py-2 text-center capitalize text-sm ${getColorClass(item[day])}">${item[day]}</td>`;
+                                    `<td class="border px-4 py-2 text-center capitalize text-sm font-semibold ${getColorClass(item[day])}">${item[day]}</td>`;
                             });
                             html += `</tr>`;
                         });
